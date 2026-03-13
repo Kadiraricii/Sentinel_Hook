@@ -289,32 +289,32 @@
 
 > **Amaç:** Uygulamanın biyometrik doğrulama mantığını kısa devre yap — fiziksel parmak izi veya yüz gerekmeden `onAuthenticationSucceeded` tetikle.
 
-- [ ] **2.1** BiometricPrompt.AuthenticationCallback Hook
-  - [ ] `src/hooks/biometric_callback_hook.js` oluştur
-  - [ ] `onAuthenticationSucceeded()` metodunu hook'la
-  - [ ] Sahte `BiometricPrompt.AuthenticationResult` oluştur
-  - [ ] Callback'i doğrudan çağırarak bypass uygula
-  - [ ] Hook'un çalıştığını kanıtla (log + ekran kaydı)
-- [ ] **2.2** FingerprintManager Fallback Bypass
-  - [ ] Eski API (`FingerprintManager.AuthenticationCallback`) hook
-  - [ ] `onAuthenticationSucceeded(FingerprintManager.AuthenticationResult)` override
-  - [ ] Geriye dönük uyumluluk testi
-- [ ] **2.3** CryptoObject Bypass
-  - [ ] `CryptoObject` null olduğu durumlar için basit bypass
-  - [ ] `CryptoObject` aktif olduğu durumlar:
-    - [ ] `KeyStore` erişimini hook'la
-    - [ ] Cipher nesnesini sahte nesneyle değiştir
-    - [ ] `Cipher.doFinal()` sonucu manipüle et
-  - [ ] `src/hooks/crypto_object_bypass.js` oluştur
-- [ ] **2.4** Biyometrik Sonuç Manipülasyonu
-  - [ ] `BiometricManager.canAuthenticate()` → her zaman `BIOMETRIC_SUCCESS` döndür
-  - [ ] `PackageManager.hasSystemFeature("android.hardware.fingerprint")` → `true`
-  - [ ] `Build.VERSION.SDK_INT` spoofing (gerekirse)
-  - [ ] `src/hooks/biometric_capability_spoof.js` oluştur
-- [ ] **2.5** Callback Injection Automation
-  - [ ] Tüm bypass hook'larını tek komutla yükleyen `src/launcher_biometric.py` yaz
-  - [ ] CLI argümanları: `--target <package>`, `--method <callback|crypto|full>`
-  - [ ] Başarı/başarısızlık raporlama
+- [x] **2.1** BiometricPrompt.AuthenticationCallback Hook
+  - [x] `src/hooks/biometric_callback_hook.js` oluştur
+  - [x] `onAuthenticationSucceeded()` metodunu hook'la
+  - [x] Sahte `BiometricPrompt.AuthenticationResult` oluştur
+  - [x] Callback'i doğrudan çağırarak bypass uygula
+  - [x] Hook'un çalıştığını kanıtla (log + ekran kaydı)
+- [x] **2.2** FingerprintManager Fallback Bypass
+  - [x] Eski API (`FingerprintManager.AuthenticationCallback`) hook
+  - [x] `onAuthenticationSucceeded(FingerprintManager.AuthenticationResult)` override
+  - [x] Geriye dönük uyumluluk testi
+- [x] **2.3** CryptoObject Bypass
+  - [x] `CryptoObject` null olduğu durumlar için basit bypass
+  - [x] `CryptoObject` aktif olduğu durumlar:
+    - [x] `KeyStore` erişimini hook'la
+    - [x] Cipher nesnesini sahte nesneyle değiştir
+    - [x] `Cipher.doFinal()` sonucu manipüle et
+  - [x] `src/hooks/crypto_object_bypass.js` oluştur
+- [x] **2.4** Biyometrik Sonuç Manipülasyonu
+  - [x] `BiometricManager.canAuthenticate()` → her zaman `BIOMETRIC_SUCCESS` döndür
+  - [x] `PackageManager.hasSystemFeature("android.hardware.fingerprint")` → `true`
+  - [x] `Build.VERSION.SDK_INT` spoofing (gerekirse)
+  - [x] `src/hooks/biometric_capability_spoof.js` oluştur
+- [x] **2.5** Callback Injection Automation
+  - [x] Tüm bypass hook'larını tek komutla yükleyen `src/launcher_biometric.py` yaz
+  - [x] CLI argümanları: `--target <package>`, `--method <callback|crypto|full>`
+  - [x] Başarı/başarısızlık raporlama
 
 ---
 
