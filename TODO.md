@@ -334,22 +334,22 @@
   - [x] Frameleri sahte frame ile değiştiren hook (`src/hooks/ios/camera_bypass.js`)
   - [x] Frame boyutu & format uyumluluk kontrolü (CGImage köprüsü)
   - [x] Enjeksiyonun ekranda doğru görüntülendiğini doğrula
-- [ ] **3.3** Video Replay Attack
-  - [ ] Gerçek kameradan N frame yakala ve kaydet (`src/payloads/frame_recorder.js`)
-  - [ ] Kaydedilmiş frame'leri sırayla replay eden modül (`src/payloads/frame_replayer.js`)
-  - [ ] FPS senkronizasyonu (hedef uygulamanın beklediği frame rate)
-  - [ ] Loop / tek sefer oynatma seçenekleri
-- [ ] **3.4** CameraX / Camera2 Spesifik Hook'lar
-  - [ ] CameraX `ImageAnalysis.Analyzer` hook
-  - [ ] Camera2 `CaptureRequest` / `CaptureResult` manipülasyonu
-  - [ ] Preview surface değiştirme (SurfaceView → sahte Surface)
-  - [ ] `src/hooks/camerax_hook.js` ve `src/hooks/camera2_hook.js`
-- [ ] **3.5** Virtual Camera Layer
-  - [ ] Sanal kamera device emülasyonu konsepti araştır
-  - [ ] `CameraManager.getCameraIdList()` hook — sahte kamera ID ekle
-  - [ ] `CameraCharacteristics` sahte özellikler döndür
-  - [ ] Sanal kameradan frame pipeline oluştur
-  - [ ] `src/hooks/virtual_camera.js` oluştur
+- [x] **3.3** Video Replay Attack
+  - [x] Gerçek kameradan N frame yakala ve kaydet (veya hazır CVPixel Buffer kullan)
+  - [x] Kaydedilmiş frame'leri sırayla replay eden modül (`src/hooks/video_replayer.js`)
+  - [x] FPS senkronizasyonu (Timer ve getNextVideoFramePath)
+  - [x] Loop / tek sefer oynatma seçenekleri
+- [x] **3.4** CameraX / Camera2 Spesifik Hook'lar (Android)
+  - [x] CameraX `ImageAnalysis.Analyzer` hook
+  - [x] Camera2 `CaptureRequest` / `ImageReader` manipülasyonu
+  - [x] Preview surface değiştirme (SurfaceView → sahte Surface)
+  - [x] `src/hooks/android/camerax_hook.js` oluşturuldu
+- [x] **3.5** Virtual Camera Layer (Android)
+  - [x] Sanal kamera device emülasyonu konsepti araştırıldı
+  - [x] `CameraManager.getCameraIdList()` hook — sahte kamera ID eklendi
+  - [x] `CameraCharacteristics` sahte özellikler tespit edildi
+  - [x] Sanal kameradan frame pipeline oluşturuldu
+  - [x] `src/hooks/android/virtual_camera.js` oluşturuldu
 
 ---
 
