@@ -1,3 +1,17 @@
-frida-tools==16.2.1
-frida==16.2.1
-objection
+# Sentinel Hook - Python Gereksinimleri
+# Kurulum: pip install -r requirements.txt
+
+# Frida ana paketi - core instrumentation engine
+frida==17.9.1
+
+# Frida komut satırı araçları (frida, frida-ps, frida-ls-devices)
+frida-tools==13.6.0
+
+# JSON çıktı düzenlemek için
+rich>=13.0.0
+
+# HTTP tabanlı bir kontrol paneli olursa kullanmak için (Opsiyonel)
+flask>=3.0.0
+
+# SSL trafiği yakalamak için mitmproxy (Proxyman alternatifi, Opsiyonel)
+mitmproxy>=10.0.0
