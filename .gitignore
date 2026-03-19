@@ -1,55 +1,62 @@
 # ========================
-# Sentinel Hook - .gitignore
+# Sentinel Hook - .gitignore (Ultra-Clean)
 # ========================
 
-# ---- Local / Private ----
-.local/
-.local/**
-
-# ---- macOS ----
-.DS_Store
-*.swp
-*.swo
-*~
-
-# ---- Node / NPM ----
+# ---- Node.js / Vite ----
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+dist/
+dist-ssr/
+*.local
+web_ui/dist/
+web_ui/node_modules/
 
-# ---- Python ----
+# ---- Rust (Cargo) ----
+target/
+**/target/
+Cargo.lock
+sentinel-rust/target/
+
+# ---- Python & Frida ----
 __pycache__/
 *.py[cod]
-*.egg-info/
-dist/
-build/
+*$py.class
+*.so
+*.dylib
 .venv/
 venv/
 env/
+# Projemizin ürettiği devasa geçici paket
+_sentinel_bundle.js
 
-# ---- Frida ----
-*.dex
-*.apk
-*.ipa
-*.so
-*.dylib
+# ---- macOS / System ----
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
 
-# ---- IDE ----
-.idea/
+# ---- IDE (VSCode / JetBrains) ----
 .vscode/
+.idea/
 *.xcworkspace/
 *.xcuserdata/
+.history/
 
 # ---- Logs & Temp ----
 logs/
 *.log
+npm-debug.log*
 tmp/
 temp/
+/Users/kadirarici/.gemini/
 
-# ---- Secrets ----
+# ---- Secrets (Güvenlik) ----
+.env
+.env.*.local
 *.pem
 *.key
 *.cert
-*.env
-.env.local
