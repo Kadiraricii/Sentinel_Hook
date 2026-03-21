@@ -1,0 +1,13 @@
+{
+    "target": "DummyBank",
+    "bundle_id": "keydo.DummyBank",
+    "device_id": "127.0.0.1:27042",
+    "platform": "ios",
+    "modules": [
+        "anti_tamper",
+        "biometrics",
+        "camera",
+        "ml_vision"
+    ],
+    "usb": true
+}
