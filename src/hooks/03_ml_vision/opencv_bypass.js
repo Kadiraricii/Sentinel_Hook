@@ -12,17 +12,22 @@ if (Process.arch !== "arm64" && Process.arch !== "arm") {
 // Android'te genelde libopencv_java4.so veya bir custom JNI .so dosyası olur
 // iOS'te ise Framework/Dylib içerisinde yer alır.
 
-Interceptor.attach(Module.findExportByName(null, "dlopen"), {
-    onEnter: function(args) {
-        this.libName = Memory.readUtf8String(args[0]);
-    },
-    onLeave: function(retval) {
-        if (this.libName && this.libName.indexOf("opencv_java") !== -1 || this.libName.indexOf("cv2") !== -1) {
-            console.log("[💥] SENTINEL YAKALADI: OpenCV Kütüphanesi RAM'e Yüklendi! (" + this.libName + ")");
-            hookOpenCV();
-        }
+    var dlopenPtr = Module.findExportByName(null, "dlopen");
+    if (dlopenPtr && typeof Interceptor === 'object' && typeof Interceptor.attach === 'function') {
+        Interceptor.attach(dlopenPtr, {
+            onEnter: function(args) {
+                try {
+                    this.libName = args[0].readUtf8String();
+                } catch(e) { this.libName = null; }
+            },
+            onLeave: function(retval) {
+                if (this.libName && (this.libName.indexOf("opencv") !== -1 || this.libName.indexOf("cv2") !== -1)) {
+                    console.log("[💥] SENTINEL YAKALADI: OpenCV Kütüphanesi Yüklendi: " + this.libName);
+                    hookOpenCV();
+                }
+            }
+        });
     }
-});
 
 function hookOpenCV() {
     try {
@@ -36,17 +41,17 @@ function hookOpenCV() {
             if (m.name.indexOf("opencv") !== -1 || m.name.indexOf("CoreML") !== -1) {
                 var exports = m.enumerateExports();
                 for (var j = 0; j < exports.length; j++) {
-                    var funcName = exports[j].name;
+                    var exp = exports[j];
+                    if (exp.type !== 'function') continue;
                     
-                    // Mangled "forward" metodunu ara (cv::dnn::Net::forward)
+                    var funcName = exp.name;
+                    
                     if (funcName.indexOf("forward") !== -1 && funcName.indexOf("dnn") !== -1) {
                         console.log("[+] OpenCV DeepNeuralNetwork Forward Fonksiyonu Bulundu: " + funcName);
                         
-                        Interceptor.attach(exports[j].address, {
+                        Interceptor.attach(exp.address, {
                             onLeave: function(retval) {
-                                console.log("[💥] SENTINEL: OpenCV AI sonucu döndürülüyor... Sonuç Manipüle Edilecek!");
-                                // C++ Katmanında Mat (Matrix) objesinin içine müdahale
-                                // Liveness Skorunu [0.99] gibi sahteleyecek pointer bellek işlemleri yapılır.
+                                console.log("[💥] SENTINEL: OpenCV AI sonucu döndürülüyor... (Bypass Aktif)");
                             }
                         });
                     }
