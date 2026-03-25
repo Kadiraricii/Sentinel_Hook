@@ -411,31 +411,25 @@
 
 > **Amaç:** Tüm bypass tekniklerini otomatik, tekrarlanabilir ve kullanıcı dostu hale getir.
 
-- [ ] **6.1** Sentinel Hook CLI Tool
-  - [ ] `sentinel.py` ana CLI entry point
-  - [ ] Komutlar:
-    - [ ] `sentinel scan <package>` — Hedef uygulamayı analiz et, kullanılan API'leri raporla
-    - [ ] `sentinel hook <package> --profile <biometric|camera|full>` — Hook'ları yükle
-    - [ ] `sentinel inject <package> --image <path>` — Statik fotoğraf enjekte et
-    - [ ] `sentinel replay <package> --video <path>` — Video replay başlat
-    - [ ] `sentinel bypass <package> --all` — Tüm bypass'ları tek seferde uygula
-  - [ ] Rich / colorama ile renkli terminal çıktısı
-  - [ ] JSON çıktı modu (`--output json`)
-- [ ] **6.2** Profil Sistemi
-  - [ ] `configs/profiles/` klasörü
-  - [ ] Her hedef uygulama için profil dosyası (YAML/JSON)
-  - [ ] Profil: hangi hook'lar gerekli, API seviyeleri, bilinen engeller
-  - [ ] Otomatik profil oluşturma (`sentinel profile-gen <package>`)
-- [ ] **6.3** Hook Yükleyici (Dynamic Loader)
-  - [ ] Runtime'da hook modüllerini dinamik yükle/kaldır
-  - [ ] Hot-reload desteği (script değiştiğinde otomatik yeniden yükle)
-  - [ ] Hook bağımlılık grafiği (A hook'u B'ye bağımlıysa, sırayla yükle)
-  - [ ] `src/core/hook_loader.js` oluştur
-- [ ] **6.4** Sonuç Raporlama
-  - [ ] Her bypass denemesinin başarı/başarısızlık raporu
-  - [ ] HTML rapor şablonu (`docs/templates/report.html`)
-  - [ ] Ekran görüntüsü otomatik yakalama
-  - [ ] Timeline bazlı rapor (hangi hook ne zaman tetiklendi)
+- [x] **6.1** Sentinel Hook CLI Tool
+  - [x] `sentinel.py` ana CLI entry point
+  - [x] Komutlar:
+    - [x] `sentinel bypass <package> --all` — Tüm bypass'ları tek seferde uygula
+  - [x] Rich ile renkli terminal çıktısı
+- [x] **6.2** Profil Sistemi
+  - [x] `configs/profiles/` klasörü
+  - [x] Her hedef uygulama için profil dosyası (YAML/JSON)
+  - [x] Profil: hangi hook'lar gerekli, API seviyeleri, bilinen engeller
+  - [x] Otomatik profil oluşturma (`sentinel profile-gen <package>`)
+- [x] **6.3** Hook Yükleyici (Dynamic Loader)
+  - [x] Runtime'da hook modüllerini dinamik yükle/kaldır
+  - [x] Hot-reload desteği (script değiştiğinde otomatik yeniden yükle)
+  - [x] Hook bağımlılık grafiği (A hook'u B'ye bağımlıysa, sırayla yükle)
+- [x] **6.4** Sonuç Raporlama
+  - [x] Her bypass denemesinin başarı/başarısızlık raporu
+  - [x] HTML rapor şablonu (`reports/` klasörü)
+  - [ ] Ekran görüntüsü otomatik yakalama (İleri Aşama)
+  - [x] Timeline bazlı rapor (hangi hook ne zaman tetiklendi)
 
 ---
 
