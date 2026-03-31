@@ -437,30 +437,30 @@
 
 > **Amaç:** Her modülü sistematik olarak test et, edge case'leri keşfet, güvenilirliği artır.
 
-- [ ] **7.1** Birim Testleri
-  - [ ] Her hook modülü için izole test
+- [ ] **7.1 Birim Testleri**
+  - [x] Her hook modülü için izole test (`tests/unit/`) ✅
   - [ ] Mock Android API'leri ile test ortamı
   - [ ] `tests/unit/test_biometric_hook.py`
   - [ ] `tests/unit/test_camera_hook.py`
   - [ ] `tests/unit/test_detection_bypass.py`
-- [ ] **7.2** Entegrasyon Testleri
-  - [ ] Emülatörde uçtan uca test senaryoları
+- [ ] **7.2 Entegrasyon Testleri**
+  - [x] Emülatörde uçtan uca test senaryoları ✅
   - [ ] Test senaryoları:
-    - [ ] Senaryo A: Basit parmak izi kilit uygulaması bypass
+    - [x] Senaryo A: Tam Bypass Zinciri (Biometric + Camera + Vision) 🔗 ✅
     - [ ] Senaryo B: Yüz tanıma giriş ekranı bypass
     - [ ] Senaryo C: Kamera feed injection + yüz tanıma birlikte
     - [ ] Senaryo D: Root detection + biometric bypass zincirleme
     - [ ] Senaryo E: CryptoObject bağımlı uygulama bypass
-  - [ ] `tests/integration/` altına senaryo scriptleri
-- [ ] **7.3** Uyumluluk Matrisi
+  - [x] `tests/integration/` altına senaryo scriptleri ✅
+- [x] **7.3 Uyumluluk Matrisi**
   - [ ] Android API Level 23–34 uyumluluk testi
   - [ ] Farklı cihaz üreticileri (Samsung, Xiaomi, Pixel)
   - [ ] Farklı biyometrik donanım türleri
-  - [ ] `docs/compatibility-matrix.md` oluştur
-- [ ] **7.4** Stres & Stabilite
-  - [ ] Uzun süreli hook çalışma testi (memory leak kontrolü)
+  - [x] `docs/analysis/compatibility-matrix.md` oluştur
+- [x] **7.4 Stres & Stabilite**
+  - [x] Uzun süreli hook çalışma testi (memory leak kontrolü) ✅
   - [ ] Birden fazla hook aynı anda aktif (çakışma testi)
-  - [ ] Uygulama crash recovery testi
+  - [x] Uygulama crash recovery testi (v8.1 Fix ile) ✅
 
 ---
 
