@@ -368,16 +368,16 @@
   - [x] Head movement / Smile detection bypass
   - [x] `src/hooks/android/liveness_logic_bypass.js` oluşturuldu
   - [ ] `src/hooks/liveness_bypass.js` oluştur
-- [ ] **4.3** FaceNet / Custom Embedding Bypass
-  - [ ] Yüz embedding vektörü karşılaştırma fonksiyonunu bul
-  - [ ] `compareFaces()` / `verify()` sonucunu `true` döndür
-  - [ ] Threshold değerini manipüle et (0.0 yap)
-  - [ ] `src/hooks/face_embedding_bypass.js` oluştur
-- [ ] **4.4** OpenCV DNN Bypass (varsa)
-  - [ ] OpenCV native çağrılarını tespit et
-  - [ ] `cv::dnn::Net::forward()` çıktısını manipüle et
-  - [ ] Native hooking via Frida Interceptor
-  - [ ] `src/hooks/opencv_bypass.js` oluştur
+- [x] **4.3** FaceNet / Custom Embedding Bypass
+  - [x] Yüz embedding vektörü karşılaştırma fonksiyonunu bul
+  - [x] `compareFaces()` / `verify()` sonucunu `true` döndür
+  - [x] Threshold değerini manipüle et (0.0 yap)
+  - [x] `src/hooks/face_embedding_bypass.js` oluşturuldu
+- [x] **4.4** OpenCV DNN Bypass (varsa)
+  - [x] OpenCV native çağrılarını tespit et
+  - [x] `cv::dnn::Net::forward()` çıktısını manipüle et
+  - [x] Native hooking via Frida Interceptor
+  - [x] `src/hooks/opencv_bypass.js` oluşturuldu
 
 ---
 
