@@ -3,15 +3,19 @@ import SwiftUI
 import Combine
 import CoreImage
 import UIKit
+import Vision
 
 class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var permissionGranted = false
     @Published var currentFrame: CGImage?
     @Published var isCameraAuthenticated = false
+    @Published var aiFaceDetected = false
+    @Published var aiBlinkDetected = false
     @Published var errorMessage: String?
     
     let captureSession = AVCaptureSession()
     private let context = CIContext()
+    private let sequenceHandler = VNSequenceRequestHandler()
     
     override init() {
         super.init()
@@ -87,10 +91,39 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         }
     }
     
-    // FRIDA'NIN YENİ HEDEFİ: @objc ve dynamic olması şart ki RAM'den kanca atılabilsin!
+    // FRIDA'NIN YENİ HEDEFİ: ML (Yapay Zeka) Motorunu kandırmak!
     @objc dynamic func simulateFrameTrigger() {
-        // Normalde orijinal frame burada işlenir. 
-        // Fakat biz Frida ile burayı ezip ekrana zorla kendi resmimizi basacağız.
+        // Simülatör boş siyah bir resimden (Karanlıktan) Yüz okumaya çalışacak!
+        let emptyImage = CIImage(color: .black).cropped(to: CGRect(x: 0, y: 0, width: 400, height: 400))
+        guard let dummyCG = context.createCGImage(emptyImage, from: emptyImage.extent) else { return }
+        
+        let request = VNDetectFaceRectanglesRequest { [weak self] req, err in
+            // VISION AI (Apple CoreML) Buraya Sonuç Döndürür
+            if let results = req.results as? [VNFaceObservation], !results.isEmpty {
+                DispatchQueue.main.async {
+                    self?.aiFaceDetected = true
+                    self?.aiBlinkDetected = true // Face varsa Blink de tetiklenmiş say (Simülasyon)
+                    self?.errorMessage = "✅ YAPAY ZEKA: Canlı İnsan Yüzü Algılandı!"
+                    
+                    // Liveness başarılıysa kilidi aç!
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        self?.isCameraAuthenticated = true
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.aiFaceDetected = false
+                    self?.aiBlinkDetected = false
+                    self?.errorMessage = "❌ YAPAY ZEKA: Kamera karanlık. Yüz Yok!"
+                }
+            }
+        }
+        
+        do {
+            try sequenceHandler.perform([request], on: dummyCG)
+        } catch {
+            print("Vision error: \(error)")
+        }
     }
     
     // FRIDA İÇİN AÇILMIŞ ARKA KAPI: Frida bu metodu kullanarak dosya sistemindeki fotoyu RAM'e basar
