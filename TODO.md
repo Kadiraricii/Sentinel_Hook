@@ -540,10 +540,10 @@
   - [x] Real-time hook durumu izleme
   - [x] Uzaktan hook yükleme/kaldırma
   - [x] Canlı kamera feed görüntüleme (debug için)
-- [x] **10.5** Yapay Zeka Destekli Hedef Analiz
-  - [x] Otomatik APK analizi ile hook stratejisi önerisi
-  - [x] Pattern matching ile bilinen koruma mekanizması tespiti
-  - [x] Önerilen bypass zinciri oluşturma
+- [] **10.5** Yapay Zeka Destekli Hedef Analiz
+  - [] Otomatik APK analizi ile hook stratejisi önerisi
+  - [] Pattern matching ile bilinen koruma mekanizması tespiti
+  - [] Önerilen bypass zinciri oluşturma
 
 ---
 
