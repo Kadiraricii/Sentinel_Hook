@@ -60,3 +60,6 @@ temp/
 *.pem
 *.key
 *.cert
+.git_backup_safe/
+time_machine.py
+README 2.md
