@@ -18,12 +18,12 @@
 <section align="center">
   <img src="https://via.placeholder.com/120x120.png?text=University+Logo" alt="University Logo" style="border-radius: 50%" />
   
-  <h4><b>[ÜNİVERSİTE ADI GİRİNİZ] - [Fakülte/Bölüm Adı]</b></h4>
-  <h5>Bitirme Projesi / Araştırma Ödevi</h5>
+  <h4><b>İSTİNYE ÜNİVERSİTESİ - BİLİŞİM GÜVENLİĞİ TEKNOLOJİSİ</b></h4>
+  <h5>Vize Ödevi</h5>
   
   <p>
-    <b>Öğrenci:</b> Kadir Arıcı<br>
-    <b>Danışman Akademisyen:</b> [DANIŞMAN İSMİ GİRİNİZ]
+    <b>Student:</b> <a href="https://github.com/Kadiraricii">Kadir Arıcı</a><br>
+    <b>Advisor:</b> <a href="https://github.com/keyvanarasteh">Keyvan Arasteh</a>
   </p>
 </section>
 
