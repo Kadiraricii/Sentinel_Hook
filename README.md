@@ -74,7 +74,7 @@ The demo covers the full Sentinel Hook workflow:
 
 ### Dashboard Preview
 
-![Sentinel Dashboard](./demo/dashboard-preview.png)
+![DummyBank App — Target A–G](./demo/dummybank-app.png)
 
 ![Live Sensor Feed](./demo/live-feed-preview.png)
 
@@ -102,7 +102,7 @@ cd web_ui && npm run dev   # → http://localhost:5173
 # 3. Build DummyBank in Xcode (iOS 17 Simulator) → ⌘R
 ```
 
-Then in the dashboard: **Scan Devices → Select Simulator → Initiate Sync → Toggle Module → Tap Target in App**
+Then in the dashboard: **Scan Devices → Select Simulator → Initiate Sync → Toggle Module → Tap Target in App**x
 
 ---
 
