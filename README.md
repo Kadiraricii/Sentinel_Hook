@@ -1,26 +1,23 @@
 <div align="center">
 
 ```
-███████╗███████╗███╗   ██╗████████╗██╗███╗   ██╗███████╗██╗          
-██╔════╝██╔════╝████╗  ██║╚══██╔══╝██║████╗  ██║██╔════╝██║          
-███████╗█████╗  ██╔██╗ ██║   ██║   ██║██╔██╗ ██║█████╗  ██║          
-╚════██║██╔══╝  ██║╚██╗██║   ██║   ██║██║╚██╗██║██╔══╝  ██║          
-███████║███████╗██║ ╚████║   ██║   ██║██║ ╚████║███████╗███████╗     
-╚══════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝    
-                       H O O K                                         
+███████╗███████╗███╗   ██╗████████╗██╗███╗   ██╗███████╗██╗
+██╔════╝██╔════╝████╗  ██║╚══██╔══╝██║████╗  ██║██╔════╝██║
+███████╗█████╗  ██╔██╗ ██║   ██║   ██║██╔██╗ ██║█████╗  ██║
+╚════██║██╔══╝  ██║╚██╗██║   ██║   ██║██║╚██╗██║██╔══╝  ██║
+███████║███████╗██║ ╚████║   ██║   ██║██║ ╚████║███████╗███████╗
+╚══════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝
+                         H O O K
 ```
 
-<h3>Advanced Dynamic Instrumentation Framework</h3>
-<h4>Biometric · Liveness · AI/ML Security Research</h4>
+<h3>Advanced Dynamic Instrumentation Framework for Mobile Security Research</h3>
+<h4>Biometric · Camera · AI/ML · Anti-Tamper · MFA · Kernel-Level Hooking</h4>
 
 <br>
 
 <section align="center">
-  <img src="https://via.placeholder.com/120x120.png?text=University+Logo" alt="University Logo" style="border-radius: 50%" />
-  
-  <h4><b>İSTİNYE ÜNİVERSİTESİ - BİLİŞİM GÜVENLİĞİ TEKNOLOJİSİ</b></h4>
-  <h5>Vize Ödevi</h5>
-  
+  <h4><b>İSTİNYE ÜNİVERSİTESİ — BİLİŞİM GÜVENLİĞİ TEKNOLOJİSİ</b></h4>
+  <h5>Academic Security Research Project</h5>
   <p>
     <b>Student:</b> <a href="https://github.com/Kadiraricii">Kadir Arıcı</a><br>
     <b>Advisor:</b> <a href="https://github.com/keyvanarasteh">Keyvan Arasteh</a>
@@ -33,97 +30,119 @@
 
 [![Stars](https://img.shields.io/github/stars/Kadiraricii/Sentinel_Hook?style=for-the-badge&color=FFD700&logo=github&logoColor=white)](https://github.com/Kadiraricii/Sentinel_Hook/stargazers)
 [![Forks](https://img.shields.io/github/forks/Kadiraricii/Sentinel_Hook?style=for-the-badge&color=00C9FF&logo=github&logoColor=white)](https://github.com/Kadiraricii/Sentinel_Hook/network/members)
-[![Issues](https://img.shields.io/github/issues/Kadiraricii/Sentinel_Hook?style=for-the-badge&color=FF6B6B&logo=github&logoColor=white)](https://github.com/Kadiraricii/Sentinel_Hook/issues)
 [![License](https://img.shields.io/badge/License-Educational%20Only-8A2BE2?style=for-the-badge&logo=bookstack&logoColor=white)](./DISCLAIMER.md)
 
 [![Frida](https://img.shields.io/badge/Frida-17.9.1-00C9FF?style=for-the-badge&logo=python&logoColor=white)](https://frida.re)
 [![iOS](https://img.shields.io/badge/iOS-16%2B-black?style=for-the-badge&logo=apple&logoColor=white)](https://developer.apple.com)
-[![Android](https://img.shields.io/badge/Android-11%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![Swift](https://img.shields.io/badge/Swift-5.9-FA7343?style=for-the-badge&logo=swift&logoColor=white)](https://swift.org)
+[![Rust](https://img.shields.io/badge/Rust-1.77-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 
-[![Visitors](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FKadiraricii%2FSentinel_Hook&count_bg=%23FF6B6B&title_bg=%23282C34&icon=github.svg&icon_color=%23E7E7E7&title=Visitors&edge_flat=false)](https://github.com/Kadiraricii/Sentinel_Hook)
-![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=Kadiraricii.SENTINEL_HOOK)
 </div>
 
 ---
 
-## 📑 İçindekiler (Table of Contents)
-- [🎯 What is Sentinel Hook?](#-what-is-sentinel-hook)
-- [🛰️ Architecture: The Sentinel Command Center](#️-architecture-the-sentinel-command-center)
-- [📚 Tactical Documentation & Research](#-tactical-documentation--research)
-- [📂 Project Structure](#-project-structure)
-- [🚀 Quick Start](#-quick-start)
-- [🕹️ Operational Procedure](#️-operational-procedure)
-- [🗺️ Roadmap](#️-roadmap)
-- [📊 Automated Evaluation Metrics](#-automated-evaluation-metrics)
-- [⚖️ Legal Notice](#️-legal-notice)
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Injection Modules](#-injection-modules)
+- [DummyBank Test Target](#-dummybank-test-target-a–g)
+- [Project Structure](#-project-structure)
+- [Quick Start](#-quick-start)
+- [Operational Procedure](#-operational-procedure)
+- [Roadmap](#-roadmap)
+- [Legal Notice](#️-legal-notice)
 
 ---
 
-## 🎯 What is Sentinel Hook?
+## 🎯 Overview
 
-**Sentinel Hook** is an advanced **Dynamic Instrumentation Framework** built on top of [Frida](https://frida.re) for security research on iOS and Android.
+**Sentinel Hook** is an academic dynamic instrumentation framework built on top of [Frida](https://frida.re) for researching and demonstrating iOS biometric and multi-factor authentication bypass techniques. It provides a full-stack attack simulation environment composed of:
 
-It targets the security layers of high-assurance applications (Banking, Crypto Wallets, Enterprise Auth) and dismantles their protection across **4 distinct layers** simultaneously:
+| Component | Technology | Role |
+|---|---|---|
+| **Frida Hooks** | JavaScript | Runtime method interception |
+| **Backend** | Rust (Axum + WebSocket) | Injection orchestration & log streaming |
+| **Dashboard** | React + Vite | Tactical control panel with live feed |
+| **Test Target** | Swift (DummyBank iOS) | Simulated bank app with A–G attack surfaces |
+
+> ⚠️ **For academic demonstration only.** See [DISCLAIMER.md](./DISCLAIMER.md).
+
+---
+
+## 🛰️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      SENTINEL HOOK                              │
-│                                                                 │
-│  [01]  BiometricPrompt / LocalAuthentication  →  TRUE inject   │
-│  [02]  AVCaptureSession / CameraX             →  Frame spoof   │
-│  [03]  CoreML / Vision / MLKit                →  AI blind      │
-│  [04]  Jailbreak / SSL / Frida Detection      →  Stealth       │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────┐        WebSocket        ┌──────────────────────┐
+│   Sentinel Dashboard │◄──────────────────────►│   Rust Backend        │
+│   (React / Vite)    │    ws://127.0.0.1:8000  │   (Axum + Tokio)      │
+└─────────────────────┘                         └──────────┬───────────┘
+                                                           │ frida-core
+                                                           ▼
+                                                ┌──────────────────────┐
+                                                │   Frida Runtime       │
+                                                │   (JS Hook Engine)    │
+                                                └──────────┬───────────┘
+                                                           │ ObjC / C interop
+                                                           ▼
+                                                ┌──────────────────────┐
+                                                │   DummyBank (iOS)     │
+                                                │   Target A – G        │
+                                                └──────────────────────┘
 ```
 
----
-
-## 🛰️ Architecture: The Sentinel Command Center
-
-Sentinel isn't just a collection of scripts; it's a **High-Performance Instrumentation Suite** powered by a hybrid architecture:
-
-### 🦀 Rust Internal Engine (Backend - Port 8000)
-The heart of Sentinel is built with **Rust (Axum Framework)** for military-grade stability and speed.
-- **Persistent Session Management:** Unlike standard Frida CLI, the Rust backend manages process PIDs in a thread-safe `HashMap`, ensuring hooks remain active even if the terminal is closed.
-- **Real-Time Telemetry (WebSockets):** Uses asynchronous streams to pipe `stdout` and `stderr` from the injection layer directly to the dashboard with zero latency.
-- **Heartbeat Anchor:** Implements a localized `stdin` heartbeat loop to prevent Frida sessions from idling or auto-terminating (Exit 0).
-
-### ⚛️ Tactical Dashboard (Frontend - Port 5173)
-A modern **React + Vite** interface designed for rapid field deployment.
-- **One-Click Deployment:** Visual toggle for all tactical modules (Biometrics, Vision, etc.).
-- **Live Signal Feed:** A real-time log viewer synchronized with the backend via WS signals.
-- **Diagnostic Mode:** Instantly highlights injection failures or "Process Not Found" errors in neon-red telemetry.
+**Control flow:**
+1. Dashboard selects a device and target process
+2. Rust backend spawns Frida and loads the appropriate JS payload(s)
+3. Frida intercepts ObjC/C methods in the iOS process at runtime
+4. Swift `@objc dynamic` bridge methods are called to update UI state
+5. Results stream back over WebSocket to the dashboard's live terminal
 
 ---
 
-## 📚 Tactical Documentation & Research
+## 💉 Injection Modules
 
-Sentinel provides a comprehensive technical library for deep-dive security research and rapid deployment.
+Seven independent injection modules can be toggled as switches in the dashboard:
 
-| Document | Description | Link |
-| :--- | :--- | :---: |
-| **🚀 Quickstart** | Under 5-minute setup and "Fast-Track" bypass guide. | [Read](./docs/QUICKSTART.md) |
-| **🧭 Usage Manual** | In-depth tactical operation and configuration manual. | [Read](./docs/USAGE_GUIDE.md) |
-| **🏗️ Architecture** | High-level system design and module orchestration maps. | [Read](./docs/ARCHITECTURE.md) |
-| **🪝 Hook Reference** | Technical signatures and symbol maps for all instrumentation. | [Read](./docs/HOOK_REFERENCE.md) |
-| **📡 API Surface** | Detailed matrix of targeted iOS & Android security frameworks. | [Read](./docs/API_SURFACE.md) |
-| **🔬 Research Center** | Deep-dive analyses on Forgery, Hijacking, and Stealth. | [Explore](./docs/research/) |
-| **🆘 Troubleshooting** | Common runtime failures and "Safe Boot" solutions. | [Read](./docs/TROUBLESHOOTING.md) |
+| # | Module ID | Color | Hook Layer | What It Does |
+|---|---|---|---|---|
+| 1 | `biometrics` | 🟣 Purple | `LAContext.evaluatePolicy` | Forces Face ID / Touch ID to return `success=true` |
+| 2 | `camera` | 🔵 Teal | `AVCaptureSession` + `simulateFrameTrigger` | Injects a synthetic image frame into the live camera pipeline |
+| 3 | `vision` | 🩷 Pink | `VNDetectFaceRectanglesRequest.results` | Replaces AI liveness detection results with a fake `VNFaceObservation` |
+| 4 | `security` | 🟡 Yellow | `open()` + DYLD scan | Masks Frida agent presence and jailbreak file system artifacts |
+| 5 | `mfachain` | 🔴 Magenta | `LAContext` + `MFAAuthManager.verifyOTP` | Phase 10.2: chains biometric bypass with OTP god-key substitution |
+| 6 | `deepfake` | 🔴 Red | `CVPixelBuffer` | Injects synthetic face frames into the video buffer stream |
+| 7 | `kernelcam` | 🟢 Green | `IOSurface` → `CMSampleBuffer` → `VTCompressionSession` | Phase 10.3: hooks the camera pipeline below AVFoundation at the kernel boundary |
+
+### Frida–Swift Bridge
+
+Each module calls `@objc dynamic` sentinel methods on live Swift instances found via `ObjC.chooseSync()`:
+
+```
+sentinelCameraBypass()  → CameraManager.isCameraAuthenticated = true
+sentinelVisionBypass()  → CameraManager.aiFaceDetected = true
+sentinelKernelBypass()  → CameraManager.isCameraAuthenticated = true
+sentinelSecurityBypass()→ SecurityCheckManager.sentinelMaskActive = true
+```
+
+This design ensures that when a Frida hook fires, the SwiftUI view automatically navigates to the **SYSTEM COMPROMISED** screen without any additional polling or timers.
 
 ---
 
-| Module | Platform | Approach | Status |
-|:-------|:---------|:---------|:------:|
-| **Biometric Logic Bypass** | iOS · Android | `evaluatePolicy` / `BiometricPrompt.AuthCallback` hook | ✅ |
-| **Camera Frame Injection** | iOS · Android | `CVPixelBuffer` / `Image.Plane` in-memory swap | ✅ |
-| **CoreML / Vision Bypass** | iOS | Fake `VNFaceObservation` object injection | ✅ |
-| **Google MLKit Bypass** | Android | `FaceDetector` return value interception | ✅ |
-| **OpenCV DNN Bypass** | iOS · Android | Native `cv::dnn::Net::forward` C++ hook | ✅ |
-| **Root / Jailbreak Evasion** | iOS · Android | `NSFileManager` + `stat` / `fopen` → ENOENT response | ✅ |
-| **SSL Pinning Bypass** | iOS · Android | `SecTrustEvaluate` + `TrustManagerImpl` patch | ✅ |
-| **Frida Presence Hiding** | iOS · Android | `/proc/self/maps` + port scan anomaly suppression | ✅ |
-| **Integrity Check Bypass** | iOS · Android | `SecStaticCodeCheckValidity` + APK signature spoof | ✅ |
+## 📱 DummyBank Test Target (A–G)
+
+DummyBank is a purpose-built iOS application with seven distinct attack surfaces, each mapped to one Sentinel injection module:
+
+| Target | Button | Module | Attack Surface | Expected Bypass Behavior |
+|---|---|---|---|---|
+| A | Face ID Gate | `biometrics` | `LAContext.evaluatePolicy` | Screen → SYSTEM COMPROMISED |
+| B | Raw Camera Feed | `camera` | `AVCaptureSession` | `isCameraAuthenticated = true` |
+| C | Liveness Scan | `vision` | `VNDetectFaceRectanglesRequest` | AI liveness defeated |
+| D | Anti-Tamper Core | `security` | DYLD Frida scan | Frida shown as MASKED |
+| E | MFA Vault | `mfachain` | Biometric + OTP chain | Any OTP bypasses both gates |
+| F | Deepfake Neural-Link | `deepfake` | `CVPixelBuffer` | Synthetic feed injected |
+| G | Kernel Camera Hook | `kernelcam` | `IOSurface` / `CMSampleBuffer` | Kernel boundary breached |
 
 ---
 
@@ -131,136 +150,158 @@ Sentinel provides a comprehensive technical library for deep-dive security resea
 
 ```
 Sentinel_Hook/
-│
-├── 📁 src/hooks/
-│   ├── 📁 01_biometrics/       ←  FaceID, TouchID, BiometricPrompt breakers
-│   │   ├── local_auth_bypass.js
-│   │   ├── biometric_callback_hook.js
-│   │   └── crypto_object_bypass.js
-│   │
-│   ├── 📁 02_camera/           ←  Camera sensor manipulation
-│   │   ├── camera_bypass.js
-│   │   ├── camerax_hook.js
-│   │   └── video_replayer.js
-│   │
-│   ├── 📁 03_ml_vision/        ←  AI / ML blindspot injection
-│   │   ├── vision_bypass.js
-│   │   ├── mlkit_face_bypass.js
-│   │   └── face_embedding_bypass.js
-│   │
-│   └── 📁 04_anti_tamper/      ←  Stealth layer
-│       ├── root_jailbreak_bypass.js
-│       ├── ssl_pinning_bypass.js
-│       ├── frida_detection_bypass.js
-│       └── integrity_bypass.js
-│
-├── 📁 tests/DummyBank/          ←  SwiftUI test lab application
-├── 📁 src/recon/                ←  Memory mapping & static analysis scripts
-├── 📄 README.md
-├── 📄 USAGE.md                  ←  Detailed usage guide
-├── 📄 ROADMAP.md
-├── 📄 CONTRIBUTING.md
-├── 📄 CHANGELOG.md
-├── 📄 SECURITY.md
-├── 📄 DISCLAIMER.md
-├── 📄 requirements.txt
-└── ⚙️  install.sh               ←  One-command setup
+├── src/
+│   └── hooks/
+│       ├── 01_biometrics/          # LAContext bypass
+│       │   └── local_auth_bypass.js
+│       ├── 02_camera/              # AVCaptureSession override
+│       │   ├── camera_bypass.js
+│       │   └── video_replayer.js
+│       ├── 03_ml_vision/           # VNDetectFaceRectangles + OpenCV
+│       │   ├── vision_bypass.js
+│       │   └── opencv_bypass.js
+│       ├── 04_anti_tamper/         # Frida detection masking
+│       │   └── frida_detection_bypass.js
+│       ├── 05_mfa/                 # Phase 10.2 MFA chain
+│       │   └── mfa_chain_bypass.js
+│       └── advanced/               # Phase 10.3 kernel hooks + deepfake
+│           ├── kernel_camera_hook.js
+│           └── realtime_deepfake_hook.js
+├── sentinel-rust/                  # Rust backend (Axum WebSocket server)
+│   └── src/main.rs
+├── web_ui/                         # React tactical dashboard
+│   └── src/
+│       ├── App.jsx
+│       └── index.css
+├── tests/
+│   └── DummyBank/                  # Test target iOS app
+│       ├── ContentView.swift       # A–G target state machine
+│       ├── BiometricAuthManager.swift
+│       ├── CameraManager.swift
+│       ├── MFAAuthManager.swift
+│       └── SecurityCheckManager.swift
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── HOOK_REFERENCE.md
+│   ├── QUICKSTART.md
+│   ├── TROUBLESHOOTING.md
+│   └── research/
+│       ├── biometric_forgery.md
+│       ├── camera_hijacking.md
+│       └── cloaking_stratagem.md
+├── inject_hooks.py                 # Module bundler & PID manager
+├── README.md
+├── ROADMAP.md
+├── CHANGELOG.md
+└── DISCLAIMER.md
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Install (One Command)
-```bash
-git clone https://github.com/Kadiraricii/Sentinel_Hook.git
-cd Sentinel_Hook
-bash install.sh
-```
+### Prerequisites
 
-### 2. Identify Your Target
-```bash
-source .venv/bin/activate
-frida-ps -Uai        # List all apps on connected device
-```
+| Tool | Version | Purpose |
+|---|---|---|
+| Frida CLI | ≥ 17.0 | Dynamic instrumentation |
+| Rust + Cargo | ≥ 1.77 | Backend server |
+| Node.js | ≥ 18 | Dashboard dev server |
+| Python | ≥ 3.12 | Hook bundler |
+| Xcode | ≥ 15 | DummyBank build & simulator |
 
-### 3. Fire a Bypass
-```bash
-# Single module
-frida -U -n DummyBank -l src/hooks/01_biometrics/local_auth_bypass.js
+### 1. Start the Rust Backend
 
-# All-in-one (full bypass stack)
-frida -U -n DummyBank \
-    -l src/hooks/04_anti_tamper/root_jailbreak_bypass.js \
-    -l src/hooks/02_camera/camera_bypass.js \
-    -l src/hooks/03_ml_vision/vision_bypass.js
-```
-
-### 3. Launch the Tactical Suite
-Sentinel requires both the backend engine and the visual dashboard to be active:
-
-**Terminal 1: The Engine (Rust)**
 ```bash
 cd sentinel-rust
+source ../.venv/bin/activate
 cargo run
-# Operational on http://127.0.0.1:8000
+# → Listening on ws://127.0.0.1:8000
 ```
 
-**Terminal 2: The Command Center (Vite)**
+### 2. Start the Dashboard
+
 ```bash
 cd web_ui
+npm install
 npm run dev
-# Accessible on http://localhost:5173
+# → http://localhost:5173
 ```
+
+### 3. Build & Run DummyBank
+
+Open `tests/DummyBank/DummyBank.xcodeproj` in Xcode, select an iOS 17+ Simulator, and press **Run** (⌘R).
+
+### 4. Inject a Module
+
+1. Open the dashboard at `http://localhost:5173`
+2. Click **Scan Devices** — your simulator will appear
+3. Enter `DummyBank` as the target process
+4. Click **Initiate Sync**
+5. Toggle any injection switch (e.g. **BIO-LOGIC BYPASS**)
+6. In the DummyBank app, tap the corresponding target button (e.g. **Target A: Face ID Gate**)
+7. Observe bypass confirmation in both the app and the dashboard terminal
 
 ---
 
 ## 🕹️ Operational Procedure
-1. **SYNC:** Open the dashboard and establish a handshake with the Rust backend.
-2. **TARGET:** Select your target device (Simulator/USB) and ensure the app (e.g., `DummyBank`) is open.
-3. **ENGAGE:** Click any module button. The Rust backend will bundle the JS, spawn Frida, and pipe real-time logs to your feed.
-4. **DETACH:** Clicking the button again sends a `SIGKILL` through the Rust engine to instantly wipe hooks from memory.
+
+### Module → Target Mapping
+
+```
+Dashboard Switch           DummyBank Button
+─────────────────────────────────────────────
+BIO-LOGIC BYPASS      →   Target A: Face ID Gate
+CAMERA INJECTOR       →   Target B: Raw Camera Feed
+AI VISION SPOOF       →   Target C: Liveness Scan
+DETECTION SHIELD      →   Target D: Anti-Tamper Core
+MFA CHAIN BYPASS      →   Target E: MFA Vault (Biometric + OTP)
+DEEPFAKE PIPELINE     →   Target F: Deepfake Neural-Link
+KERNEL CAM HOOK       →   Target G: Kernel Camera Hook
+```
+
+### MFA Chain Demo (Target E)
+
+1. Press **Target E** (without injection) → OTP screen appears
+2. Type any wrong code → `❌ Wrong code — Inject MFA CHAIN to mask`
+3. Enable **MFA CHAIN BYPASS** in dashboard
+4. Press **Target E** again → Frida bypasses biometric automatically
+5. OTP screen shows — type any 6 digits → Frida replaces with `SENTINEL_OVERRIDE`
+6. **SYSTEM COMPROMISED** screen appears
+
+### Live Sensor Feed (Phase 10.4)
+
+The dashboard includes a **Live Sensor Feed** panel. When CAMERA, DEEPFAKE, or KERNEL CAM modules are active, the panel shows an animated scan-line viewport with real-time frame metadata received via WebSocket `[FRAME:LAYER:timestamp:STATUS]` messages.
 
 ---
 
 ## 🗺️ Roadmap
 
-| Phase | Scope | Status |
-|:------|:------|:------:|
-| Phase 2 | Biometric Logic Bypass | 🟢 Complete |
-| Phase 3 | Camera & Sensor Spoofing | 🟢 Complete |
-| Phase 4 | AI / ML Liveness Bypass | 🟢 Complete |
-| Phase 5 | Anti-Tamper & Stealth | 🟢 Complete |
-| Phase 6 | CLI Automation & Dashboard | 🟢 Complete |
-| Phase 7 | Diagnostics & Stability | 🟢 Complete |
-| Phase 8 | iOS Instrumentation Hardening | 🟢 Complete |
-| Phase 9 | Documentation & Knowledge Base | 🟢 Complete |
-| Phase 10| Advanced & Extensions | 🟢 Complete |
+See [ROADMAP.md](./ROADMAP.md) for the complete phased roadmap. Summary:
 
----
-
-## 📊 Automated Evaluation Metrics
-
-This project has been heavily audited and structured to meet rigorous automated evaluation systems and quality metrics:
-
-- **Commit Activity & Consistency:** A distributed, realistic timeline demonstrating continuous integration across a 26-day sustained window.
-- **Time Investment Scoring:** Carefully calibrated commit timelines reflecting heavy dedication and architectural planning without impossible day-stacking.
-- **Code Volume & Quality:** High internal code quality with resolved TODO densities (`TODO.md` is 100% completed), comprehensive linting, and fully annotated hook definitions.
-- **Documentation Coverage:** A complete markdown ecosystem including dynamic `README.md`, badges, internal indexing (TOC), and extensive specialized sub-folders (`/docs`, `/configs`, `/src/recon`).
-- **Technical Depth:** Deep-dive implementation of reverse-engineering techniques, bypassing hardware boundaries natively, and overcoming deep-rooted memory scanning algorithms in an undetected fashion.
+| Phase | Description | Status |
+|---|---|---|
+| 1–5 | Core biometric, camera, and vision hooks | ✅ Complete |
+| 6–8 | Anti-tamper, deepfake, orchestration | ✅ Complete |
+| 9 | Rust backend + React dashboard | ✅ Complete |
+| 10.1 | Pattern lock & combo auth bypass | ✅ Complete |
+| 10.2 | MFA chain bypass (Biometric + OTP) | ✅ Complete |
+| 10.3 | Kernel-level camera hook (IOSurface layer) | ✅ Complete |
+| 10.4 | Remote control panel + live sensor feed | ✅ Complete |
+| 10.5 | AI-assisted target analysis | 🔄 In Progress |
 
 ---
 
 ## ⚖️ Legal Notice
 
-> This project is intended **solely for educational and security research** purposes (Red Teaming, Penetration Testing). Using it against unauthorized systems is illegal. See **[DISCLAIMER.md](./DISCLAIMER.md)** for full terms.
+This project is developed **exclusively for academic and educational purposes** as part of a university security research course. All techniques demonstrated herein are performed against purpose-built test applications in controlled, isolated environments.
+
+**Unauthorized use of these techniques against production applications or real users is illegal under applicable computer fraud and abuse laws.** The author assumes no liability for misuse.
+
+See [DISCLAIMER.md](./DISCLAIMER.md) for the full legal notice.
 
 ---
 
 <div align="center">
-
-**Understand security. Build something better.**
-
-[![GitHub](https://img.shields.io/badge/github-Kadiraricii-181717?style=for-the-badge&logo=github)](https://github.com/Kadiraricii)
-
+  <sub>Built with 🔬 for academic security research · İstinye Üniversitesi · 2025–2026</sub>
 </div>

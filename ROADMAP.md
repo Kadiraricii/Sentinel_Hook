@@ -1,59 +1,174 @@
-# 🗺️ Sentinel Hook — Development Roadmap
+# Roadmap — Sentinel Hook
 
-> This document outlines the development phases of Sentinel Hook and its goals in security research.
-> 🟢 Completed · 🟡 In Progress · ⚪️ Planned
-
----
-
-## 🟢 PHASE 0: Architecture & Foundation
-- **Goal:** Establish the Frida + Python infrastructure and define the directory hierarchy.
-- **Status:** Complete.
-- **Actions:** Repository initialized, `src/recon` modules scaffolded, C/Swift compatibility layer tested.
-
-## 🟢 PHASE 1: Target Reconnaissance
-- **Goal:** Identify biometric call surfaces in banking applications.
-- **Status:** Complete.
-- **Actions:** `Info.plist` (iOS) and `Manifest.xml` (Android) permissions audited. ObjC Runtime dump scripts (`class_dumper.js`) written.
-
-## 🟢 PHASE 2: Logical Biometric Bypass
-- **Goal:** Force a `true` boolean response for face or fingerprint authentication callbacks.
-- **Status:** Complete.
-- **Actions:** `LocalAuthentication` (Apple) and `BiometricPrompt` (Google) callback hooks implemented. Hardware-bound `CryptoObject` key lock broken.
-
-## 🟢 PHASE 3: Camera & Sensor Spoofing
-- **Goal:** Intercept live camera frames and inject a static image or pre-recorded video.
-- **Status:** Complete.
-- **Actions:** `AVCaptureSession` (iOS) and `CameraX` (Android) in-memory `CVPixelBuffer` / `ImageReader` swaps implemented. Fake face images and 60 FPS video sequences (`video_replayer.js`) successfully injected.
-
-## 🟢 PHASE 4: AI & Machine Learning Muting
-- **Goal:** Receive a "Live Human Face" approval even with a completely dark / empty camera frame.
-- **Status:** Complete.
-- **Actions:** Apple CoreML (`Vision`) and Google `MLKit` C++ layers deceived. Zero probability outputs overridden to `0.99 (Success)`. OpenCV `cv::dnn` modules also patched.
-
-## 🟢 PHASE 5: Stealth & Anti-Tamper Evasion
-- **Goal:** Conceal the Sentinel Hook agent and mask all device compromise indicators.
-- **Status:** Complete.
-- **Actions:**
-  - Root/Jailbreak detection bypassed via `NSFileManager` and C-level `fopen/stat` hooks returning `ENOENT`.
-  - SSL Pinning neutralized via `TrustManager` and `SecTrustEvaluate` patches.
-  - Anti-Frida detection bypassed by suppressing `/proc/self/maps` anomaly reads.
-  - Application integrity checks (APK signature / `SecStaticCodeCheckValidity`) defeated.
+> This document tracks the complete phased development plan for the Sentinel Hook academic research framework.
 
 ---
 
-## 🟡 PHASE 6: Automation, CLI & Dashboard
-- **Goal:** Build a command center to orchestrate the full bypass stack efficiently.
-- **Status:** In Progress.
-- **Planned Actions:**
-  - ArgParse-based CLI via `launcher.py` with target selection and module flags.
-  - `--bypass ALL` flag to inject every module in correct order in one command.
-  - (Optional) Lightweight FastAPI / Flask web dashboard for session management.
+## Legend
+
+| Icon | Meaning |
+|---|---|
+| ✅ | Completed |
+| 🔄 | In Progress |
+| 📋 | Planned |
 
 ---
 
-## ⚪️ PHASE 7: Advanced Kernel Evasion *(Future Vision)*
-- **Goal:** Kernel-level rootkit integration for next-generation mobile threat research.
-- **Status:** Planned.
-- **Planned Actions:**
-  - ARM64e hardware-level PAC (Pointer Authentication Code) bypass.
-  - eBPF-based Android network and filesystem detection evasion.
+## Phase 1 — Biometric Authentication Bypass
+
+**Target:** `LAContext.evaluatePolicy` (Face ID / Touch ID)
+
+- ✅ Hook `LAContext.canEvaluatePolicy` → spoof hardware availability
+- ✅ Hook `LAContext.evaluatePolicy` → force `success = true` in `onEnter`
+- ✅ Simulator-safe detection via `UIDevice.currentDevice().model()`
+- ✅ DummyBank **Target A: Face ID Gate** wired to `BiometricAuthManager`
+
+---
+
+## Phase 2 — Camera Feed Hijacking
+
+**Target:** `AVCaptureSession`, `AVCaptureVideoDataOutput`
+
+- ✅ Hook `simulateFrameTrigger` to intercept live frame dispatch
+- ✅ Inject synthetic JPEG via `receiveHackerImage:` backdoor method
+- ✅ `sentinelCameraBypass()` bridge → sets `isCameraAuthenticated = true`
+- ✅ DummyBank **Target B: Raw Camera Feed**
+
+---
+
+## Phase 3 — AI / ML Liveness Detection Spoofing
+
+**Target:** `VNDetectFaceRectanglesRequest`, CoreML
+
+- ✅ Hook `VNDetectFaceRectanglesRequest.results` → replace with synthetic `VNFaceObservation`
+- ✅ Persistent object retention via `.retain()` to survive Frida GC cycles
+- ✅ `sentinelVisionBypass()` bridge → sets `aiFaceDetected = true`
+- ✅ DummyBank **Target C: Liveness Scan**
+
+---
+
+## Phase 4 — OpenCV Native Bypass
+
+**Target:** OpenCV DNN C++ native layer
+
+- ✅ `dlopen` hook for OpenCV dynamic library (physical devices)
+- ✅ Simulator passive mode with documented fallback behavior
+- ✅ Integrated into VISION module alongside `vision_bypass.js`
+
+---
+
+## Phase 5 — Anti-Tamper & Frida Detection Masking
+
+**Target:** `sysctl`, `open()`, DYLD image list
+
+- ✅ `open()` hook redirects jailbreak file paths to `/dev/null`
+- ✅ DYLD scan surface exposed in Swift via `SecurityCheckManager`
+- ✅ `sentinelSecurityBypass()` bridge → marks Frida as MASKED in scan results
+- ✅ Simulator-aware: kernel hooks gracefully suppressed with informative messages
+- ✅ DummyBank **Target D: Anti-Tamper Core**
+
+---
+
+## Phase 6 — Deepfake Pipeline
+
+**Target:** `CVPixelBuffer` injection
+
+- ✅ `realtime_deepfake_hook.js` — synthetic CV frame injection at 5-frame intervals
+- ✅ Emits `[FRAME:CVPixelBuffer:...]` tags for dashboard live feed
+- ✅ DummyBank **Target F: Deepfake Neural-Link**
+
+---
+
+## Phase 7 — Video Replay Attack
+
+**Target:** `AVCaptureSession` output replay
+
+- ✅ `video_replayer.js` — loops pre-recorded session frames into the live capture output
+- ✅ Bundled with CAMERA module
+
+---
+
+## Phase 8 — Anti-Analysis & Orchestration
+
+- ✅ `_sentinel_bundle.js` — automatic multi-file bundler for combined injection
+- ✅ `inject_hooks.py` — module registry with PID tracking and per-module detach
+- ✅ NUCLEAR PURGE — detaches all hooks simultaneously
+
+---
+
+## Phase 9 — Rust Backend & React Dashboard
+
+**Tech:** Axum WebSocket server + React + Vite
+
+- ✅ Real-time log streaming over WebSocket (`ws://127.0.0.1:8000/ws`)
+- ✅ Device discovery via `frida-core` bindings
+- ✅ Per-module toggle switches (not buttons) with active/inactive state
+- ✅ Console auto-scroll contained within terminal panel (does not scroll page)
+- ✅ CLEAR button for terminal log purge
+- ✅ PURGE SESSIONS — global hook detach
+
+---
+
+## Phase 10.1 — Pattern Lock & Combo Auth Bypass
+
+- ✅ Pattern lock interception hooks
+- ✅ Face ID + Pattern lock combined chain bypass
+
+---
+
+## Phase 10.2 — MFA Chain Bypass
+
+**Target:** `MFAAuthManager.verifyOTP` + LAContext chain
+
+- ✅ `mfa_chain_bypass.js` — intercepts `verifyOTP(code:)` and replaces `args[2]` with `SENTINEL_OVERRIDE`
+- ✅ `initiateMFAChain()` — biometric → OTP two-step chain with simulator fallback
+- ✅ OTP auto-submit on 6-digit entry; wrong codes rejected without injection
+- ✅ DummyBank **Target E: MFA Vault** with `awaitingOTP` state routing
+- ✅ OTP screen hint badge shows "SENTINEL ACTIVE → ANY CODE BYPASSES"
+
+---
+
+## Phase 10.3 — Kernel-Level Camera Hooking
+
+**Target:** `IOSurface`, `CMSampleBuffer`, `VTCompressionSession`
+
+- ✅ L1: `IOSurface` ObjC allocation hook (GPU shared memory boundary)
+- ✅ L2: `CMSampleBufferCreateReadyWithImageBuffer` / `AVCaptureSession` fallback
+- ✅ L3: `VTCompressionSessionEncodeFrame` / `CVPixelBufferLockBaseAddress` fallback
+- ✅ `sentinelKernelBypass()` bridge → triggers COMPROMISED screen
+- ✅ `[FRAME:KERNEL_HEARTBEAT:...]` tags emitted every 1.5s for live feed animation
+- ✅ DummyBank **Target G: Kernel Camera Hook**
+
+---
+
+## Phase 10.4 — Remote Control Panel & Live Sensor Feed
+
+- ✅ Dashboard Live Sensor Feed panel (Phase 10.4)
+- ✅ `[FRAME:LAYER:timestamp:STATUS]` WebSocket tag parsing
+- ✅ Animated scan-line viewport with crosshair overlay and frame counter
+- ✅ Panel activates automatically when CAMERA / DEEPFAKE / KERNEL CAM modules are on
+- ✅ Remote hook toggle and detach (all existing dashboard functionality)
+
+---
+
+## Phase 10.5 — AI-Assisted Target Analysis
+
+**Goal:** Automatic hook strategy recommendation based on target app characteristics
+
+- 🔄 Pattern matching for known protection mechanisms (e.g. AppShield, FreeRASP)
+- 📋 Automated hook script generation from binary analysis
+- 📋 Integration with static analysis outputs (Ghidra / class-dump)
+
+---
+
+## Phase 11 — Cross-Platform Extension (Planned)
+
+- 📋 Android support: Frida hooks for BiometricPrompt + CameraX
+- 📋 V4L2 (Linux) driver-level camera hook research
+- 📋 Automated APK unpacking + smali-level hook injection
+
+---
+
+<div align="center">
+  <sub>Sentinel Hook · Academic Security Research · İstinye Üniversitesi · 2025–2026</sub>
+</div>

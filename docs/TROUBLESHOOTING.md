@@ -1,289 +1,170 @@
-# 🔧 Sentinel Hook — Troubleshooting Guide
+# Troubleshooting Guide — Sentinel Hook
 
-> **Scope:** Frida connection issues, hook errors, platform-specific problems  
-> **Frida Version:** 16.2.x  
-> **Format:** Error → Root Cause → Solution
+> Common issues, root causes, and verified solutions.
 
 ---
 
-## Quick Diagnostic Command
+## Table of Contents
 
+- [Backend / Connection Issues](#backend--connection-issues)
+- [Frida Injection Errors](#frida-injection-errors)
+- [DummyBank / Simulator Issues](#dummybank--simulator-issues)
+- [Dashboard / UI Issues](#dashboard--ui-issues)
+- [Module-Specific Issues](#module-specific-issues)
+
+---
+
+## Backend / Connection Issues
+
+### `No devices found` in dashboard
+
+**Cause:** Frida server is not running, or the simulator is not booted.
+
+**Fix:**
+1. Ensure the iOS Simulator is running (launch DummyBank from Xcode first)
+2. Verify `cargo run` is running in `sentinel-rust/`
+3. Click **Scan Devices** — simulators are found via `frida-core` locally (no USB needed)
+
+---
+
+### `WebSocket connection failed`
+
+**Cause:** Rust backend is not running or crashed on startup.
+
+**Fix:**
 ```bash
-# Check the environment status with a single command
-source .venv/bin/activate && frida --version && frida-ls-devices
+cd sentinel-rust
+source ../.venv/bin/activate
+cargo run
 ```
+Check for port conflicts: `lsof -i :8000`
 
 ---
 
-## Category 1: Connection & Session Errors
+### Module activates but immediately shows `oturumu kapandı`
 
-### ❌ `RPCException: unable to handle message`
+**Cause:** Frida script crashes at load time (syntax error or missing ObjC class).
 
-**Symptom:** After a Python call to `script.exports.init()`, an `RPCException` is thrown.
-
-**Root Causes:**
-
-1. Python attempts to make a call before the `rpc.exports` object on the JS side is fully loaded.
-2. Syntax error inside `sentinel_loader.js`, script failed to load.
-3. Frida version is incompatible with the `frida-compile` output.
-
-**Solution:**
-
-```python
-# ❌ Incorrect: making a call immediately while loading the script
-script = session.create_script(source)
-script.load()
-result = script.exports.init(config)  # Not ready yet!
-
-# ✅ Correct: wait for the ready signal with an on_message callback
-def on_message(message, data):
-    if message['type'] == 'send' and message['payload'] == 'ready':
-        script.exports.init(config)
-
-script.on('message', on_message)
-script.load()
-```
+**Fix:** Check the terminal log for `[-] FATAL` or `not a function` lines immediately after `[*] filename.js yüklendi`.
 
 ---
 
-### ❌ `PermissionDenied: unable to attach`
+## Frida Injection Errors
 
-**Symptom:** Permission error during `frida.attach(pid)`.
+### `[-] STEALTH ERROR: sysctl - not a function`
+### `[-] STEALTH ERROR: open() - not a function`
 
-**Root Causes:**
+**Cause:** These are kernel-level C function hooks that require a physical iOS device. On the simulator (which runs as a macOS process), they are not available.
 
-| Condition | Explanation |
-|:------|:---------|
-| `frida-server` is not running | `frida-server` was not started on the device |
-| Wrong architecture | `arm64` binary is used on an `arm64e` device |
-| SIP active (Mac host) | macOS System Integrity Protection blocks Frida |
-| No USB connection | `frida-ls-devices` does not list the device |
-
-**Solution:**
-
+**Status:** ✅ Fixed in v10.4.1 — these are now silently skipped with an informational message. If you still see them, the bundled script is cached. Run:
 ```bash
-# 1. Start frida-server correctly on the device (requires jailbroken device)
-ssh root@<device-ip>
-/usr/sbin/frida-server &
-
-# 2. Verify architecture
-frida-ls-devices
-# Output should display: iPhone (id: ...)
-
-# 3. Test connection
-frida -U -n SpringBoard
-# If successful, a REPL opens
+python3 inject_hooks.py rebuild
 ```
 
 ---
 
-### ❌ `Failed to spawn: unable to find process with name`
+### `[-] KERNEL L2: CMSampleBuffer hook failed - not a function`
+### `[-] KERNEL L3: VTCompressionSession hook failed - not a function`
 
-**Symptom:** `frida.spawn()` or `frida.attach()` cannot find the application.
+**Cause:** `Module.findExportByName("CoreMedia", ...)` returns `null` on simulator because the framework is loaded from a different path. The code was attempting to call `.isNull()` on a JavaScript `null`.
 
-**Solution:**
-
-```bash
-# Fetch the running process list
-frida-ps -Ua   # USB connected device, installed applications
-
-# Find the correct Bundle ID
-frida-ps -Uai | grep -i "banking"
-
-# Spawn via Bundle ID
-frida -U -f com.example.bankapp --no-pause
-```
+**Status:** ✅ Fixed in v10.3.0 — multiple symbol names are tried in sequence (`CMSampleBufferCreateReadyWithImageBuffer`, `CMSampleBufferCreate`, `CMSampleBufferGetImageBuffer`). If none are found, the hook falls back to `AVCaptureSession.startRunning` (L2) and `CVPixelBufferLockBaseAddress` (L3).
 
 ---
 
-## Category 2: Hook Execution Errors
+### `ObjC.chooseSync is empty — bypass not triggered`
 
-### ❌ `TypeError: not a function` (ObjC method hook)
+**Cause:** The camera screen in DummyBank has not been opened yet, so no `CameraManager` instance exists in memory.
 
-**Symptom:** `ObjC.classes.SomeClass['- methodName']` returns undefined or cannot be called.
-
-**Root Causes:**
-
-1. The method name is incorrect — the class does not implement this method.
-2. The method is lazy-loaded; the class is not in memory yet.
-3. Swift obfuscation — the method is exported with a mangled name like `_$S...`.
-
-**Solution:**
-
-```js
-// 1. Verify if the class actually contains that method
-const cls = ObjC.classes.LAContext;
-console.log(cls.$ownMethods.join('\n'));  // List all methods
-
-// 2. Use ObjC.schedule for a lazy class
-ObjC.schedule(ObjC.mainQueue, function() {
-  const target = ObjC.classes.LAContext['- evaluatePolicy:localizedReason:reply:'];
-  if (target) Interceptor.attach(target.implementation, { ... });
-});
-
-// 3. Scan exports for the Swift mangled name
-const mod = Process.getModuleByName('TargetApp');
-mod.enumerateExports().filter(e => e.name.includes('evaluatePolicy'));
-```
+**Fix:** The fallback hook on `startDummySessionForSimulator` handles this — tap the target button in DummyBank after enabling the module. The bypass fires at session start.
 
 ---
 
-### ❌ `Error: access violation reading 0x...` (Native hook crash)
+### Script loads twice / hooks fire multiple times
 
-**Symptom:** Native hooks like `stat64` or `access` crash the application.
+**Cause:** `inject_hooks.py` is loading all JS files in a directory, including both `kernel_camera_hook.js` and `realtime_deepfake_hook.js` for both `deepfake` and `kernelcam` modules (they share `src/hooks/advanced/`).
 
-**Root Cause:** Inside `onEnter`, attempting a null pointer read via `args[0].readUtf8String()`.
-
-**Solution — Safe Boot wrapper:**
-
-```js
-// ❌ Incorrect: direct read
-onEnter(args) {
-  this.path = args[0].readUtf8String();  // Crash if NULL!
-}
-
-// ✅ Correct: null guard
-onEnter(args) {
-  try {
-    this.path = args[0].isNull() ? '' : args[0].readUtf8String();
-  } catch (e) {
-    this.path = '';
-    send({ type: 'warning', msg: 'stat64 null path', error: e.message });
-  }
-}
-```
+**Impact:** Minor — duplicate log lines. Hook behavior is idempotent (the second hook on the same method is handled by Frida's interceptor stack).
 
 ---
 
-### ❌ `Error: Module 'Security' not found`
+## DummyBank / Simulator Issues
 
-**Symptom:** `Module.findExportByName('Security', 'SecItemCopyMatching')` returns null.
+### `Could not create inference context` (Vision error loop)
 
-**Solution:**
+**Cause:** `Vision.framework` face detection requests use the Neural Engine, which is not available on iOS Simulator. Each failed VNDetect request logs this error.
 
-```js
-// Use the exact dylib path instead of the Framework name
-const SEC = Module.findExportByName(
-  '/System/Library/Frameworks/Security.framework/Security',
-  'SecItemCopyMatching'
-);
+**Fix:** This is expected behavior on simulator. The `vision_bypass.js` hook still fires on the ObjC property getter, which short-circuits the pipeline before the result is consumed by app code. The error is from the underlying Vision framework and cannot be suppressed without disabling Vision entirely.
 
-// Alternative: scan across all modules
-const sym = Process.findExportByName('SecItemCopyMatching');
-```
+**Workaround:** Use a physical device for Vision module demonstrations without this noise.
 
 ---
 
-## Category 3: Camera / Frame Injection Errors
+### Biometric bypass fires but app screen doesn't update
 
-### ❌ `CVReturn error: -6680` (kCVReturnInvalidArgument)
+**Cause:** `BiometricAuthManager.authenticateUser()` was called before the Frida hook was registered; the hook missed the window.
 
-**Symptom:** `CVPixelBufferCreate` returns an error code when creating a fake buffer.
+**Fix:** The retry logic in `BiometricAuthManager` waits 0.8s on simulator before calling `LAContext` a second time. If you toggle the module and then immediately tap Target A, the hook should be in place.
 
-**Root Cause:** The Pixel format or dimensions don't match the target application's expectations.
-
-**Solution:**
-
-```js
-// Retrieve the format and dimensions of the original buffer, use them for the new buffer
-const origBuf = CMSampleBufferGetImageBuffer(realSampleBuffer);
-const width  = CVPixelBufferGetWidth(origBuf);
-const height = CVPixelBufferGetHeight(origBuf);
-const fmt    = CVPixelBufferGetPixelFormatType(origBuf);  // Usually 875704438 = kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
-
-// Create fake buffer with matched parameters
-CVPixelBufferCreate(kCFAllocatorDefault, width, height, fmt, null, fakeBufferRef);
-```
+Ensure module shows `[OK] Modül 'biometrics' aktif edildi` in the terminal *before* tapping.
 
 ---
 
-### ❌ Camera Screen Freezes / Appears Black
+### MFA OTP screen: wrong code is accepted without injection
 
-**Symptom:** After frame injection, the app's camera preview gets stuck or blackened.
+**Cause:** Old code had `code == "SENTINEL_OVERRIDE"` hardcoded in Swift, making it pass regardless of Frida.
 
-**Root Cause:** The `presentationTimeStamp` and `duration` values in `CMSampleBufferRef` are either missing or incorrect.
-
-**Solution:**
-
-```js
-// Copy the original timestamp over to the fake buffer
-const origTimestamp = CMSampleBufferGetPresentationTimeStamp(realSampleBuffer);
-// Use this timestamp when creating the fake buffer
-CMSampleBufferCreateForImageBuffer(
-  allocator, fakePixelBuffer,
-  true, null, null,
-  formatDescription,
-  origTimestamp,  // ← Use real timestamp here
-  origTimestamp,
-  fakeBufferRef
-);
-```
+**Status:** ✅ Fixed in v10.2.1 — `verifyOTP` now only accepts the randomly generated OTP (logged to Xcode console) or the Frida-injected god-key. Wrong codes produce `❌ Wrong code`.
 
 ---
 
-## Category 4: Environment & Setup Issues
+### Target D (Anti-Tamper) shows Frida as `NOT PRESENT` even without Security module
 
-### ❌ `frida-compile: command not found`
+**Cause:** `_dyld_image_count` / `_dyld_get_image_name` may not expose `frida-agent` under all Frida attachment modes.
 
-```bash
-# Execute via npx
-npx frida-compile src/hooks/ios/cloak.js -o dist/cloak.js
-
-# Or reinstall if missing
-npm install --save-dev frida-compile
-```
+**Expected behavior:** On simulator without injection, Frida is typically **detected** (showing `⚠ INJECTED`). With DETECTION SHIELD active, it shows `✅ MASKED`. If Frida is not detected initially, the demonstration still works — enable the module and re-run Target D scan to observe the `sentinelSecurityBypass()` call updating the result in real-time.
 
 ---
 
-### ❌ `ImportError: No module named 'frida'`
+## Dashboard / UI Issues
 
-```bash
-# Is the virtual environment active?
-which python  # Should point to .venv/bin/python
+### Page scrolls to bottom when new logs arrive
 
-# If not, activate it
-source .venv/bin/activate
-pip install frida==16.2.1 frida-tools==16.2.1
-```
+**Status:** ✅ Fixed in v10.4.1 — the log stream now uses `consoleRef.current.scrollTop = scrollHeight` instead of `element.scrollIntoView()`. Only the terminal panel scrolls internally.
 
 ---
 
-### ❌ Frida port 27042 is already in use
+### Module toggle turns on but doesn't turn off cleanly
 
-```bash
-# Kill any lingering frida-server processes
-pkill -9 frida-server
-lsof -i :27042  # Verify port release
-```
+**Cause:** Older builds sent an empty `modules` array on detach, causing the backend to interpret it as "attach all".
+
+**Status:** ✅ Fixed — detach now sends a single-module payload `{ modules: [id], action: "detach" }`.
 
 ---
 
-## General Diagnostic Tools
+### Live Sensor Feed shows `[ NO SENSOR SIGNAL ]` even with KERNELCAM on
 
-| Tool | Command | Purpose |
-|:-----|:------|:-------------|
-| Device List | `frida-ls-devices` | Shows all connected devices |
-| Process List | `frida-ps -Ua` | Lists Application PIDs & Bundle IDs |
-| Live REPL | `frida -U -n AppName` | Interactive JS execution shell |
-| Trace Mode | `frida-trace -U -n AppName -m "LAContext"` | Automatically logs method calls |
-| Objection | `objection -g AppName explore` | High-level interactive security bypass suite |
+**Cause:** The dashboard parses `[FRAME:...]` messages from the WebSocket stream. If the heartbeat is not emitting, the panel stays idle.
+
+**Fix:**
+1. Confirm `kernel_camera_hook.js` loaded (check console for `KERNEL LAYER 2 (Simulator): AVCaptureSession boundary hooked`)
+2. Open Target G in DummyBank to start the camera session
+3. The `setInterval` heartbeat fires every 1500ms regardless of camera state — frames should appear within 2 seconds of module activation
 
 ---
 
-*See: [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`HOOK_REFERENCE.md`](HOOK_REFERENCE.md) · [`QUICKSTART.md`](QUICKSTART.md)*
+## Module-Specific Issues
 
-## Known Issues & Simulation Logs
+### DEEPFAKE module: `Frames intercepted: 0`
 
-### 1. Sysctl / Open Hook Error (Simulator Environments)
-```
-[-] Sysctl hook could not be installed: not a function
-[-] Open hook could not be installed: not a function
-```
-**Explanation:** This error occurs when the Anti-Tamper/Jailbreak bypass modules (Anti-Detection Shield) are executed in a computer environment (iOS / Android Simulator). The related C++ memory directories (`/proc/sysctl` or `open()` syscalls) belong directly to ARM-architecture mobile device kernels. Because the test is not performed on a physical iPhone or Android device, Sentinel Hook throws these errors. However, it continues to bypass vulnerabilities (Biometric/Deepfake) in the simulator without completely interrupting the process.
+**Cause:** L1 IOSurface hook is looking for the class `IOSurface` which may not be loaded in the simulator process. This is cosmetic — frame count increments only when IOSurface is used by the real camera hardware.
 
-### 2. Session Closed (Nuclear Purge)
-```
-[SYSTEM] Module 'deepfake' session closed. (Exit: Ok(ExitStatus(unix_wait_status(9))))
-[SYSTEM] NUCLEAR PURGE: All hooks detached.
-```
-**Explanation:** When the "PURGE SESSIONS" button is clicked after Biometric, Liveness, or Injector operations are finished, the Rust backend service immediately destroys the RAM-based interventions made to the system (using SIGKILL 9). This is not an error; it is the state of Sentinel silently exiting memory (Stealth Mode) following a successful penetration operation.
+**Impact:** None. Deepfake synthetic frame injection (`realtime_deepfake_hook.js`) runs independently via its own timer interval.
+
+---
+
+### Camera bypass fires but `isCameraAuthenticated` stays `false`
+
+**Cause:** `ObjC.chooseSync` found no live `CameraManager` instance at injection time, and the fallback hook on `startDummySessionForSimulator` didn't fire because the camera screen was never opened.
+
+**Fix:** Always toggle the injection module *before* pressing the corresponding target button in DummyBank, not after.

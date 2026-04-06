@@ -1,217 +1,164 @@
-# 🪝 Sentinel Hook — Hook Referans Kılavuzu
+# Hook Reference — Sentinel Hook
 
-> **Kapsam:** iOS hook modülleri (cloak, keychain, camera)  
-> **Frida Sürümü:** 16.2.x  
-> **Hedef Platform:** iOS 14–18
+> Complete reference for all Frida injection modules, their hook surfaces, and expected behaviors.
 
 ---
 
-## Genel Bakış
+## Module Registry
 
-Her hook modülü, `Interceptor.attach()` veya `ObjC.classes` API'si aracılığıyla hedef fonksiyonu ele geçirir. Modüllerin çalışma sırası kritiktir:
-
-```
-[1] cloak.js  ──►  [2] keychain.js  ──►  [3] camera.js
-```
-
----
-
-## Modül 1: `hooks/ios/cloak.js` — Jailbreak / Anti-Tamper Bypass
-
-### Amaç
-Hedef uygulamanın jailbreak tespiti yapan native C fonksiyonlarını noktalayarak cihazın "temiz" görünmesini sağlar. Bu modül çalışmadan diğer hook'lar tespit edilip engellenir.
-
-### Hedeflenen Sistem Fonksiyonları
-
-| Fonksiyon | Kütüphane | Neden Hedefleniyor |
-|:----------|:----------|:-------------------|
-| `stat64` | `libSystem.B.dylib` | `stat("/Applications/Cydia.app")` tespitini engeller |
-| `access` | `libSystem.B.dylib` | `/bin/bash`, `/usr/sbin/sshd` path kontrollerini engeller |
-| `fork` | `libSystem.B.dylib` | Fork anomali tespitini (sandbox kaçış kontrolü) engeller |
-| `posix_spawn` | `libSystem.B.dylib` | Spawn tabanlı jailbreak tespitini engeller |
-| `getenv` | `libSystem.B.dylib` | `DYLD_INSERT_LIBRARIES` env var tespitini engeller |
-| `dlopen` | `libdyld.dylib` | Frida dylib yükleme tespitini gizler |
-
-### Giriş / Çıkış Parametreleri
-
-```js
-// stat64 hook — örnek
-Interceptor.attach(
-  Module.findExportByName('libSystem.B.dylib', 'stat64'),
-  {
-    onEnter(args) {
-      this.path = args[0].readUtf8String();  // IN: const char* path
-      this.stat = args[1];                   // IN/OUT: struct stat* buf
-    },
-    onLeave(retval) {
-      // OUT: int (0 = başarı, -1 = hata)
-      const BLOCKED_PATHS = [
-        '/Applications/Cydia.app',
-        '/usr/bin/ssh',
-        '/bin/bash',
-        '/etc/apt'
-      ];
-      if (BLOCKED_PATHS.some(p => this.path.includes(p))) {
-        retval.replace(-1);  // Dosya yokmuş gibi davran
-      }
-    }
-  }
-);
-```
-
-### Yan Etkiler & Dikkat Edilecekler
-- `stat64` hooklama agresiftir; sistem dosyalarına erişen meşru app fonksiyonlarını etkileyebilir.
-- `fork` blocklama bazı uygulamalarda çökmeye yol açar — `safe_boot.js` wrapper kullanın.
+| Module ID | Script(s) | Layer | Swift Bridge Method |
+|---|---|---|---|
+| `biometrics` | `local_auth_bypass.js` | ObjC — LAContext | — (direct callback) |
+| `camera` | `camera_bypass.js`, `video_replayer.js` | ObjC — AVFoundation | `sentinelCameraBypass()` |
+| `vision` | `vision_bypass.js`, `opencv_bypass.js` | ObjC — Vision + C++ | `sentinelVisionBypass()` |
+| `security` | `frida_detection_bypass.js` | C — syscall + DYLD | `sentinelSecurityBypass()` |
+| `mfachain` | `mfa_chain_bypass.js` | ObjC — LAContext + Swift | `verifyOTP(code:)` arg replace |
+| `deepfake` | `realtime_deepfake_hook.js`, `kernel_camera_hook.js` | ObjC + C | `sentinelKernelBypass()` |
+| `kernelcam` | `kernel_camera_hook.js`, `realtime_deepfake_hook.js` | C + ObjC | `sentinelKernelBypass()` |
 
 ---
 
-## Modül 2: `hooks/ios/keychain.js` — Keychain & SecItem Bypass
+## 1. Biometrics — `local_auth_bypass.js`
 
-### Amaç
-iOS Keychain'de saklanan token, sertifika ve şifre gibi gizli verileri okur; gerekirse bypass sonrası kullanılabilir hale getirir.
-
-### Hedeflenen Sistem Fonksiyonları
-
-| Fonksiyon | Framework | Neden Hedefleniyor |
-|:----------|:----------|:-------------------|
-| `SecItemCopyMatching` | `Security.framework` | Keychain'den veri okuma ana API'si |
-| `SecItemAdd` | `Security.framework` | Yeni Keychain kaydı oluşturma |
-| `SecItemUpdate` | `Security.framework` | Mevcut Keychain kaydını değiştirme |
-| `SecKeyCreateSignature` | `Security.framework` | Private key ile imzalama (CryptoObject) |
-| `SecAccessControlCreateWithFlags` | `Security.framework` | Biyometrik bağlı anahtar kontrolü |
-| `_CC_SHA256` | `libcommonCrypto.dylib` | Hash doğrulama manipülasyonu |
-
-### Giriş / Çıkış Parametreleri
-
-```js
-// SecItemCopyMatching hook
-Interceptor.attach(
-  Module.findExportByName('Security', 'SecItemCopyMatching'),
-  {
-    onEnter(args) {
-      // IN: CFDictionaryRef query — aranacak item kriterleri
-      this.query = new ObjC.Object(args[0]);
-      // IN/OUT: CFTypeRef* result — sonucun yazılacağı pointer
-      this.resultPtr = args[1];
-    },
-    onLeave(retval) {
-      // OUT: OSStatus (0 = errSecSuccess)
-      // retval.replace(ptr(0)) ile başarı simüle edilebilir
-      send({
-        type: 'keychain_access',
-        query: this.query.toString(),
-        status: retval.toInt32()
-      });
-    }
-  }
-);
+```
+Target:  LAContext.canEvaluatePolicy   (ObjC)
+         LAContext.evaluatePolicy       (ObjC)
 ```
 
-### Bypass Senaryosu: Biyometrik Bağlı Anahtar
+**Technique:** `canEvaluatePolicy` is hooked in `onLeave` to replace `retval` with `1` (YES). `evaluatePolicy` is hooked in `onEnter` to immediately fire the Swift `reply` block with `success = true, error = nil` before the system can reject it.
 
-Bazı uygulamalar `kSecAccessControlBiometryCurrentSet` ile anahtarı biyometrik sensöre bağlar. Bu durumda:
-1. `SecItemCopyMatching` doğrudan `errSecAuthFailed` döndürür.
-2. Sentinel, `LAContext` ile önceden bir `evaluatePolicy` bypass yapmalı.
-3. Ardından `SecItemCopyMatching` yeniden çağrıldığında başarıyla veri alınır.
+**Why `onEnter` not `onLeave`:** On simulator, the system never reaches `onLeave` for `evaluatePolicy` because there is no hardware to evaluate. Firing the reply in `onEnter` guarantees execution regardless of hardware availability.
+
+**Swift surface:** `BiometricAuthManager.authenticateUser()` — `@objc dynamic`. The `asyncAfter` retry on simulator gives Frida 0.8s to register the hook before the second `LAContext` call.
+
+**Success indicator:** `authManager.isAuthenticated = true` → ContentView routes to `.compromised`.
 
 ---
 
-## Modül 3: `hooks/ios/camera.js` — AVFoundation Frame Enjeksiyonu
-
-### Amaç
-`AVCaptureSession` üzerinden akan canlı kamera akışını keserek statik JPEG veya video buffer'ını "gerçek kamera frame'i" olarak uygulamaya sunar (replay-attack / liveness bypass).
-
-### Hedeflenen Sistem Fonksiyonları / Metodlar
-
-| Hedef | Tip | Neden Hedefleniyor |
-|:------|:----|:-------------------|
-| `AVCaptureSession -startRunning` | ObjC method | Gerçek kamera başlatmasını engeller / kontrol eder |
-| `AVCaptureVideoDataOutput setSampleBufferDelegate:queue:` | ObjC method | Delegate pointer'ı yakalanır |
-| `captureOutput:didOutputSampleBuffer:fromConnection:` | Delegate callback | Frame verisi bu method'a düşer — enjeksiyon noktası |
-| `CMSampleBufferGetImageBuffer` | CoreMedia C func | `CVPixelBufferRef` alındığı nokta |
-| `CVPixelBufferLockBaseAddress` | CoreVideo C func | Buffer bellek kilidi — manipülasyon öncesi gerekli |
-| `VNDetectFaceRectanglesRequest` | Vision framework | ML tabanlı yüz tespiti — sahte frame gönderilir |
-
-### Frame Enjeksiyonu Akışı
+## 2. Camera — `camera_bypass.js` + `video_replayer.js`
 
 ```
-[1] setSampleBufferDelegate hook tetiklenir
-      └── Delegate objesi & queue referansı saklanır
-
-[2] didOutputSampleBuffer hook'u delegate üzerine eklenir
-      └── Her gerçek kamera frame'i bu noktada yakalanır
-
-[3] Gerçek CMSampleBuffer DROP edilir
-
-[4] Python'dan RPC ile gönderilen JPEG yüklenir
-      └── UIImage → CIImage → CVPixelBuffer dönüşümü
-
-[5] Sahte CVPixelBuffer'dan yeni CMSampleBuffer oluşturulur
-
-[6] Orijinal delegate callback'i SAHTE buffer ile çağrılır
-      └── Uygulama "kameradan geldi" zannettiği sahte yüzü alır
+Target:  _TtC9DummyBank13CameraManager.simulateFrameTrigger  (ObjC)
+         _TtC9DummyBank13CameraManager.sentinelCameraBypass  (ObjC, Frida bridge)
 ```
 
-### Giriş / Çıkış Parametreleri (Delegate Hook)
+**Technique:** `simulateFrameTrigger` is the periodic frame dispatch method instrumented as the injection point. The hook calls `receiveHackerImage:` with a synthetic JPEG path. `ObjC.chooseSync()` finds the live `CameraManager` instance and calls `sentinelCameraBypass()` directly.
 
-```js
-// didOutputSampleBuffer enjeksiyonu
-const delegateClass = ObjC.classes[capturedDelegateClassName];
-const method = delegateClass['- captureOutput:didOutputSampleBuffer:fromConnection:'];
+**Swift surface:** `CameraManager.sentinelCameraBypass()` — `@objc dynamic`. Sets `isCameraAuthenticated = true` on the main thread.
 
-Interceptor.attach(method.implementation, {
-  onEnter(args) {
-    // args[0]: self (delegate objesi)
-    // args[1]: SEL
-    // args[2]: AVCaptureOutput* captureOutput
-    // args[3]: CMSampleBufferRef sampleBuffer  ← enjeksiyon noktası
-    // args[4]: AVCaptureConnection* connection
-    
-    const fakeSampleBuffer = buildFakeBuffer(injectPayloadPath);
-    args[3] = fakeSampleBuffer;  // DROP & REPLACE
-  }
-});
-```
-
-### Platform Uyumluluk Notu (Compatibility Matrix'ten)
-
-| iOS Sürümü | Frame Enjeksiyonu Başarı Oranı |
-|:-----------|:-------------------------------|
-| 14.x | %100 |
-| 15.x | %98 |
-| 16.x | %95 |
-| 17.x | %90 |
-| 18 (Beta) | %60 — `CVPixelBuffer` format değişikliği araştırılıyor |
+**Success indicator:** `cameraManager.isCameraAuthenticated = true` → ContentView routes to `.compromised(message: "TARGET B: ...")`.
 
 ---
 
-## Ortak Yardımcılar
+## 3. Vision — `vision_bypass.js` + `opencv_bypass.js`
 
-### `utils/safe_boot.js`
-Tüm hook'larda kullanılan hata sarmalayıcı:
+```
+Target:  VNDetectFaceRectanglesRequest.results  (ObjC property getter)
+         dlopen (OpenCV DNN — C, physical devices only)
+```
 
-```js
-function safeAttach(target, callbacks) {
-  try {
-    Interceptor.attach(target, callbacks);
-  } catch (e) {
-    send({ type: 'hook_error', target: target.toString(), error: e.message });
-    // Process çökmez, hook atlanır
-  }
+**Technique:** The `results` property getter is hooked in `onLeave` to replace its return value with a pre-allocated `NSArray` containing a synthetic `VNFaceObservation`. The observation is `.retain()`-ed to prevent Frida's garbage collector from freeing it between calls.
+
+**Simulator note:** `opencv_bypass.js` uses `dlopen` which is unavailable on simulator — it is gracefully skipped. The ObjC `vision_bypass.js` hook works on both.
+
+**Swift surface:** `CameraManager.sentinelVisionBypass()` — sets `isCameraAuthenticated = true` and `aiFaceDetected = true`.
+
+---
+
+## 4. Security — `frida_detection_bypass.js`
+
+```
+Target:  open()   (C — libc, FS probe masking)
+         sysctl   (C — kernel, anti-debug, physical devices only)
+         _TtC9DummyBank20SecurityCheckManager.sentinelSecurityBypass  (ObjC bridge)
+```
+
+**Technique:** `open()` path argument is inspected in `onEnter`; if it contains `frida` or `cydia`, the path is overwritten with `/dev/null` before the kernel sees it. On physical devices, `sysctl` `CTL_KERN_PROC_PROC` is intercepted to suppress the `P_TRACED` (debugger attached) flag.
+
+**Simulator:** `sysctl` and `open()` hooks are silently skipped with an informative log; no error messages are emitted. The ObjC bridge call still fires.
+
+**Swift surface:** `SecurityCheckManager.sentinelSecurityBypass()` — sets `sentinelMaskActive = true` and rewrites the `DYLD: frida-agent.dylib` finding to show `MASKED by Sentinel stealth layer`.
+
+---
+
+## 5. MFA Chain — `mfa_chain_bypass.js`
+
+```
+Target:  LAContext.evaluatePolicy                         (Phase 1 re-used)
+         _TtC9DummyBank14MFAAuthManager.verifyOTP_code_  (ObjC mangled)
+```
+
+**Technique (Chain):**
+1. `LAContext.evaluatePolicy` hook fires the biometric success callback — same as module 1
+2. `verifyOTP(code:)` is hooked in `onEnter`:
+   - `args[2]` (the OTP string `NSString*`) is replaced with a new `NSString` containing `SENTINEL_OVERRIDE`
+   - `retval` in `onLeave` is forced to `1` as a safety double-tap
+3. The Swift method checks `code == "SENTINEL_OVERRIDE"` → returns `true` → `isFullyAuthenticated = true`
+
+**Without injection:** `verifyOTP` rejects any code that does not match the randomly generated expected OTP printed to the Xcode console.
+
+**Swift surface:** `MFAAuthManager.verifyOTP(code:)` — `@objc dynamic`.
+
+---
+
+## 6. Deepfake — `realtime_deepfake_hook.js`
+
+```
+Target:  _TtC9DummyBank13CameraManager  (ObjC instance, CVPixelBuffer pipeline)
+```
+
+**Technique:** Emits synthetic `CVPixelBuffer`-level frame tags at 5-frame intervals simulating a deepfake pipeline replacement. On physical devices with `AVCaptureVideoDataOutput`, actual buffer swapping can be performed.
+
+**FRAME tags emitted:** `[FRAME:CVPixelBuffer:timestamp:SYNTHETIC]`
+
+---
+
+## 7. Kernel Camera Hook — `kernel_camera_hook.js`
+
+```
+Target (L1):  IOSurface + surfaceWithProperties:  (ObjC)
+Target (L2):  CMSampleBufferCreateReadyWithImageBuffer  (CoreMedia C export)
+              AVCaptureSession.startRunning  (ObjC fallback for simulator)
+Target (L3):  VTCompressionSessionEncodeFrame  (VideoToolbox C export)
+              CVPixelBufferLockBaseAddress  (CoreVideo C export fallback)
+```
+
+**Technique:** Three independent interceptors target progressively deeper layers of the iOS camera pipeline, below the `AVFoundation` API surface. On simulator, C exports that are unavailable fall back to the deepest accessible ObjC method.
+
+**Heartbeat:** `setInterval` emits `[FRAME:KERNEL_HEARTBEAT:timestamp:ACTIVE]` every 1500ms to keep the dashboard Live Sensor Feed panel animated.
+
+**Swift surface:** `CameraManager.sentinelKernelBypass()` — `@objc dynamic`. Called via `ObjC.chooseSync()`.
+
+---
+
+## Frida–Swift Bridge Pattern
+
+All camera and security modules use the following pattern to trigger Swift UI updates:
+
+```javascript
+var instances = ObjC.chooseSync(ObjC.classes["_TtC9DummyBank13CameraManager"]);
+if (instances.length > 0) {
+    instances[0]["- sentinelCameraBypass"]();
 }
 ```
 
-### `utils/smart_mapper.py`
-iOS sürümüne göre değişen method imzalarını ve offset'leri dinamik olarak çözer:
-
-```python
-def resolve_symbol(module: str, symbol: str, ios_version: tuple) -> int:
-    """
-    iOS 17+ bazı private API'lerin adı değişti.
-    Smart Mapper, bilinen eşleme tablosundan doğru offset'i döndürür.
-    """
-```
+If no live instance is found (target screen not yet opened), the hook falls back to intercepting `startDummySessionForSimulator` — the method called when any camera-related target button is tapped — and fires the bypass from there.
 
 ---
 
-*Bkz: [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`API_SURFACE.md`](API_SURFACE.md) · [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md)*
+## FRAME Tag Protocol (Phase 10.4)
+
+Hooks emit structured log lines that the dashboard WebSocket parser consumes without displaying them in the console:
+
+```
+[FRAME:LAYER:TIMESTAMP_MS:STATUS]
+
+Examples:
+[FRAME:IOSURFACE:1712345678901:INTERCEPTED]
+[FRAME:SAMPLEBUFFER:1712345678910:TAGGED]
+[FRAME:VTCOMPRESSION:1712345678920:ENCODED]
+[FRAME:KERNEL_HEARTBEAT:1712345678930:ACTIVE]
+[FRAME:CVPIXELBUFFER:1712345678940:LOCKED]
+```
+
+The dashboard extracts `LAYER` for the "Last Layer" display and increments a frame counter.
