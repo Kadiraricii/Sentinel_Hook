@@ -13,6 +13,22 @@
 <h3>Advanced Dynamic Instrumentation Framework</h3>
 <h4>Biometric · Liveness · AI/ML Security Research</h4>
 
+<br>
+
+<section align="center">
+  <img src="https://via.placeholder.com/120x120.png?text=University+Logo" alt="University Logo" style="border-radius: 50%" />
+  
+  <h4><b>[ÜNİVERSİTE ADI GİRİNİZ] - [Fakülte/Bölüm Adı]</b></h4>
+  <h5>Bitirme Projesi / Araştırma Ödevi</h5>
+  
+  <p>
+    <b>Öğrenci:</b> Kadir Arıcı<br>
+    <b>Danışman Akademisyen:</b> [DANIŞMAN İSMİ GİRİNİZ]
+  </p>
+</section>
+
+<br>
+
 ---
 
 [![Stars](https://img.shields.io/github/stars/Kadiraricii/Sentinel_Hook?style=for-the-badge&color=FFD700&logo=github&logoColor=white)](https://github.com/Kadiraricii/Sentinel_Hook/stargazers)
@@ -28,6 +44,19 @@
 [![Visitors](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FKadiraricii%2FSentinel_Hook&count_bg=%23FF6B6B&title_bg=%23282C34&icon=github.svg&icon_color=%23E7E7E7&title=Visitors&edge_flat=false)](https://github.com/Kadiraricii/Sentinel_Hook)
 ![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=Kadiraricii.SENTINEL_HOOK)
 </div>
+
+---
+
+## 📑 İçindekiler (Table of Contents)
+- [🎯 What is Sentinel Hook?](#-what-is-sentinel-hook)
+- [🛰️ Architecture: The Sentinel Command Center](#️-architecture-the-sentinel-command-center)
+- [📚 Tactical Documentation & Research](#-tactical-documentation--research)
+- [📂 Project Structure](#-project-structure)
+- [🚀 Quick Start](#-quick-start)
+- [🕹️ Operational Procedure](#️-operational-procedure)
+- [🗺️ Roadmap](#️-roadmap)
+- [📊 Automated Evaluation Metrics](#-automated-evaluation-metrics)
+- [⚖️ Legal Notice](#️-legal-notice)
 
 ---
 
