@@ -15,3 +15,7 @@ flask>=3.0.0
 
 # SSL trafiği yakalamak için mitmproxy (Proxyman alternatifi, Opsiyonel)
 mitmproxy>=10.0.0
+
+# Phase 10.1: OpenCV ve Matematik kütüphanesi (Deepfake Modülü İçin)
+opencv-python>=4.8.0
+numpy>=1.26.0
