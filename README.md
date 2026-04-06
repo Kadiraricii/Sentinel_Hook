@@ -44,6 +44,7 @@
 
 ## 📑 Table of Contents
 
+- [Demo](#-demo)
 - [Overview](#-overview)
 - [Architecture](#-architecture)
 - [Injection Modules](#-injection-modules)
@@ -53,6 +54,55 @@
 - [Operational Procedure](#-operational-procedure)
 - [Roadmap](#-roadmap)
 - [Legal Notice](#️-legal-notice)
+
+---
+
+## 🎬 Demo
+
+### Full Project Walkthrough
+
+> **Video:** [`demo/project-demo.mov`](./demo/project-demo.mov) — Complete end-to-end demo (recorded by project author)  
+> **Environment:** iOS 17 Simulator · Frida 17.x · Rust Backend · React Tactical Dashboard
+
+The demo covers the full Sentinel Hook workflow:
+- Rust backend startup and WebSocket server initialization
+- Dashboard device discovery (iPhone 17 Pro Simulator detected via `frida-core`)
+- Live injection of all 7 modules (BIO-LOGIC → CAMERA → VISION → DETECTION SHIELD → MFA CHAIN → DEEPFAKE → KERNEL CAM)
+- DummyBank Targets A–G: each button triggering its corresponding Frida hook
+- SYSTEM COMPROMISED screen for successful bypasses
+- Live Sensor Feed (Phase 10.4) activating on camera-related modules
+
+### Dashboard Preview
+
+![Sentinel Dashboard](./demo/dashboard-preview.png)
+
+![Live Sensor Feed](./demo/live-feed-preview.png)
+
+### What the Demo Shows
+
+| Segment | Content |
+|---|---|
+| **Build** | Rust backend compiled and listening on `ws://127.0.0.1:8000` |
+| **Device Discovery** | iPhone 17 Pro Simulator detected via `frida-core` |
+| **7 Injection Modules** | BIO-LOGIC · CAMERA · AI VISION · DETECTION SHIELD · MFA CHAIN · DEEPFAKE · KERNEL CAM |
+| **DummyBank Targets** | A–G buttons each mapped to one injection module |
+| **Bypass Confirmation** | `SYSTEM COMPROMISED` screen on successful injection |
+| **Live Sensor Feed** | Phase 10.4 remote camera monitor with animated scan-line |
+| **MFA Chain Demo** | Wrong OTP rejected → injection active → any code bypasses both gates |
+
+### Running It Yourself
+
+```bash
+# 1. Start Rust backend
+cd sentinel-rust && source ../.venv/bin/activate && cargo run
+
+# 2. Start dashboard
+cd web_ui && npm run dev   # → http://localhost:5173
+
+# 3. Build DummyBank in Xcode (iOS 17 Simulator) → ⌘R
+```
+
+Then in the dashboard: **Scan Devices → Select Simulator → Initiate Sync → Toggle Module → Tap Target in App**
 
 ---
 
