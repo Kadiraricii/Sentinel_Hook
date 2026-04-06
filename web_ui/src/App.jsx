@@ -94,8 +94,23 @@ export default function App() {
   const handleInject = async (module) => {
     const isAlreadyActive = activeModules.includes(module);
     
-    // UI artik varsayım bazlı 'ENGAGED' logu basmıyor. Sadece isteği logluyor.
-    setLogs((prev) => [...prev, isAlreadyActive ? `[PURGE] Detaching: ${module.toUpperCase()}` : `[EXEC] Requesting Injection: ${module.toUpperCase()}`]);
+    if (isAlreadyActive) {
+        setLogs((prev) => [...prev, `[PURGE] Detaching module: ${module.toUpperCase()}`]);
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/inject', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target, device_id: selectedDevice.id, modules: [] }),
+            });
+            setActiveModules((prev) => prev.filter(m => m !== module));
+            setLogs((prev) => [...prev, `[SYSTEM] Tactical signal lost for '${module}'.`]);
+        } catch(e) {
+            setLogs((prev) => [...prev, `[!] CRITICAL: ${e.message}`]);
+        }
+        return;
+    }
+
+    setLogs((prev) => [...prev, `[EXEC] Requesting Injection: ${module.toUpperCase()}`]);
 
     try {
       const res = await fetch('http://127.0.0.1:8000/api/inject', {
@@ -108,8 +123,6 @@ export default function App() {
       if (data.status === 'detached') {
           setActiveModules((prev) => prev.filter(m => m !== module));
       }
-      // Not: 'success' gelince activeModules'a eklemiyoruz, WebSocket'ten [OK] bekliyoruz.
-      
     } catch(e) {
       setLogs((prev) => [...prev, `[!] CRITICAL: ${e.message}`]);
     }

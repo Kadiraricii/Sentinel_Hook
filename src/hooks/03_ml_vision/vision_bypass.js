@@ -1,52 +1,55 @@
 /**
- * Sentinel Hook - Vision Framework Bypass (Phase 8.0 - Memory Stabilized)
- * Target: Google & Apple ML Liveness/Vision Detection
- * Fix: Resolved EXC_BAD_ACCESS during Swift casting by using persistent ObjC objects.
+ * Sentinel Hook - Enterprise AI Vision Bypass
+ * Target: CoreML / Vision Framework Liveness Detection
+ * Defense: Robust Swift Object Pointer Retention
  */
 
 if (ObjC.available) {
+    console.log("[🌟] SENTINEL SUBSYSTEM: Initiating ML Vision Override");
+
     var VNDetectFaceRectanglesRequest = ObjC.classes.VNDetectFaceRectanglesRequest;
     var VNFaceObservation = ObjC.classes.VNFaceObservation;
     var NSArray = ObjC.classes.NSArray;
     
     if (VNDetectFaceRectanglesRequest && VNFaceObservation) {
-        console.log("[🌟] SENTINEL VISION: Engine stabilized & Memory Protected.");
+        console.log("[+] TARGET LOCKED: Vision Engine mapped. Patching arrays...");
         
         var cachedFakeResults = null;
         var lastLogTime = 0;
 
-        // results getter kancası
-        Interceptor.attach(VNDetectFaceRectanglesRequest["- results"].implementation, {
-            onLeave: function(retval) {
-                // Eğer zaten bir sonuç yoksa veya boşsa, kendi sahte sonucumuzu enjekte et
-                try {
-                    if (!cachedFakeResults) {
-                        // Objeleri oluştur ve BELLEKTE TUT (Retain)
-                        var face = VNFaceObservation.alloc().init();
-                        
-                        // Swift'in cast ederken çökmemesi için NSArray oluştur
-                        // .handle kullanarak ham pointer üzerinden işlem yapıyoruz
-                        var array = NSArray.arrayWithObject_(face);
-                        
-                        // Frida GC'nin silmemesi için global referans ve retain
-                        cachedFakeResults = array.retain(); 
-                        face.retain(); 
-                        
-                        console.log("[+] SENTINEL: Memory-Persistent Observation Created.");
-                    }
+        try {
+            Interceptor.attach(VNDetectFaceRectanglesRequest["- results"].implementation, {
+                onLeave: function(retval) {
+                    try {
+                        if (!cachedFakeResults) {
+                            // Swift array bridging memory protection
+                            var face = VNFaceObservation.alloc().init();
+                            var array = NSArray.arrayWithObject_(face);
+                            
+                            // Prevent Frida GC from annihilating Swift objects
+                            cachedFakeResults = array.retain(); 
+                            face.retain(); 
+                            
+                            console.log("[+] MEMORY PATCH: Allocated persistent synthetic observation.");
+                        }
 
-                    // Orijinal dönüş değerini bizim korumalı array ile değiştir
-                    retval.replace(cachedFakeResults);
+                        // Override output
+                        retval.replace(cachedFakeResults);
 
-                    var now = Date.now();
-                    if (now - lastLogTime > 4000) {
-                        console.log("[💥] SENTINEL INTEL: Vision AI Feed Spoofed (Memory Safe Mode)");
-                        lastLogTime = now;
+                        var now = Date.now();
+                        if (now - lastLogTime > 4000) {
+                            console.log("[💥] SENTINEL INTEL: ML Vision Engine successfully spoofed. (Trust established)");
+                            lastLogTime = now;
+                        }
+                    } catch(e) {
+                         // Silent fail to prevent crash in rapid CV loop
                     }
-                } catch(e) {
-                    // console.log("Vision Bypass Error: " + e);
                 }
-            }
-        });
+            });
+        } catch(err) {
+            console.log("[-] FATAL: Failed to hook Vision properties - " + err.message);
+        }
+    } else {
+        console.log("[-] WARNING: CoreML/Vision frameworks not loaded in current process.");
     }
 }
