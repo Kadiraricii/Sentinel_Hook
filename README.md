@@ -74,7 +74,7 @@ The demo covers the full Sentinel Hook workflow:
 - SYSTEM COMPROMISED screen for successful bypasses
 - Live Sensor Feed (Phase 10.4) activating on camera-related modules
 
-### Dashboard Preview
+### Dashboard Preview:
 
 ![DummyBank App — Target A–G](./demo/dummybank-app.png)
 
