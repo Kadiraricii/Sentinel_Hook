@@ -16,6 +16,8 @@
 <br>
 
 <section align="center">
+  <img src="./demo/isu.jpeg" alt="İstinye Üniversitesi Logo" width="120" style="border-radius: 50%" />
+  
   <h4><b>İSTİNYE ÜNİVERSİTESİ — BİLİŞİM GÜVENLİĞİ TEKNOLOJİSİ</b></h4>
   <h5>Academic Security Research Project</h5>
   <p>
